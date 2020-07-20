@@ -97,8 +97,6 @@ def callback():
 
     return 'OK'
 
-from replyFriend import reply_spideypool_party
-
 @handler.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
     text = event.message.text
