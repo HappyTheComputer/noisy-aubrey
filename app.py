@@ -103,20 +103,7 @@ from replyFriend import reply_spideypool_party
 def handle_text_message(event):
     text = event.message.text
 
-    if text == '測試':
-        if isinstance(event.source, SourceUser):
-            profile = line_bot_api.get_profile(event.source.user_id)
-            reply_msg = reply_spideypool_party(text, profile.display_name)
-            line_bot_api.reply_message(
-                event.reply_token, [
-                    TextSendMessage(text=reply_msg)
-                ]
-            )
-        else:
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text="你是誰啊？"))
-    elif text == 'profile':
+    if text == 'profile':
         if isinstance(event.source, SourceUser):
             profile = line_bot_api.get_profile(event.source.user_id)
             line_bot_api.reply_message(
@@ -545,10 +532,20 @@ def handle_text_message(event):
             messages = [TextSendMessage(text='available: false')]
         line_bot_api.reply_message(event.reply_token, messages)
     else:
-        print(text)
-        pass
-        # line_bot_api.reply_message(
-        #     event.reply_token, TextSendMessage(text=event.message.text))
+        # 判斷是否是朋友
+        if isinstance(event.source, SourceUser):
+            profile = line_bot_api.get_profile(event.source.user_id)
+            reply_msg = reply_spideypool_party(text, profile.display_name)
+            if not reply_msg:
+                line_bot_api.reply_message(
+                    event.reply_token, [
+                        TextSendMessage(text=reply_msg)
+                    ]
+                )
+        else:
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text="你是誰啊？"))
 
 
 @handler.add(MessageEvent, message=LocationMessage)
