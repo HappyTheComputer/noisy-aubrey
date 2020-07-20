@@ -531,22 +531,20 @@ def handle_text_message(event):
         else:
             messages = [TextSendMessage(text='available: false')]
         line_bot_api.reply_message(event.reply_token, messages)
-    else:
-        # 判斷是否是朋友
+    elif text == '測試':
         if isinstance(event.source, SourceUser):
             profile = line_bot_api.get_profile(event.source.user_id)
-            reply_msg = reply_spideypool_party(text, profile.display_name)
-            if not reply_msg:
-                line_bot_api.reply_message(
+            line_bot_api.reply_message(
                     event.reply_token, [
-                        TextSendMessage(text=reply_msg)
+                        TextSendMessage(text='不要以為你是' + profile.display_name + '就了不起哦！')
                     ]
                 )
         else:
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text="你是誰啊？"))
-
+    else:
+        pass
 
 @handler.add(MessageEvent, message=LocationMessage)
 def handle_location_message(event):
