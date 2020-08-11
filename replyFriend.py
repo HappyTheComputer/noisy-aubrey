@@ -15,7 +15,7 @@ from linebot.models import (
     SeparatorComponent, QuickReply, QuickReplyButton,
     ImageSendMessage)
 
-def reply_spideypool_party(event):
+def reply_spideypool_party(line_bot_api, event):
     text = event.message.text
     if text == '測試':
         if isinstance(event.source, SourceUser):
