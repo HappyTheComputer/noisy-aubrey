@@ -74,12 +74,32 @@ def assort_event(event):
         pass
 
 import random
-AskCupRandom = ['凸凸-沒杯啦！', '平凸-聖杯啦！', '凸平-聖杯啦！', '平平-笑杯啦！']
+
 def check_text_key(text, event):
-    if text.find('擲杯') >= 0:
-        rand = random.choice(AskCupRandom)
+    if text.find('杯') >= 0:
+        askGod = ['凸凸-沒杯啦！', '平凸-聖杯啦！', '凸平-聖杯啦！', '平平-笑杯啦！']
+        rand = random.choice(askGod)
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=rand))
+    elif text.find('運勢') >= 0:
+        askGod = ['大吉大利！', '中吉之戰！', '小吉不嫌棄。', '吉也佳～', '後悔末吉QQ', '凶無大志。', '大凶']
+        rand = random.choice(askGod)
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=rand))
     else:
-        pass
+        # 回官方貼圖
+        askGod = {
+            "11537":[52002734, 52002773],
+            "11538":[51626494, 51626533],
+            "11539":[52114110, 52114149]
+        }
+        package = random.choice(askGod.keys())
+        sticker = random.randint(askGod[package][0], askGod[package][1])
+        line_bot_api.reply_message(
+        event.reply_token,
+        StickerSendMessage(
+            package_id=package,
+            sticker_id=sticker)
+        )
