@@ -24,6 +24,14 @@ import psycopg2
 
 DATABASE_URL = os.environ['DATABASE_URL']
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+cur=conn.cursor()
+
+cur.execute('SELECT VERSION()')
+results=cur.fetchall()
+print ("Database version : %s " % results)
+
+conn.commit()
+cur.close()
 
 from argparse import ArgumentParser
 
