@@ -49,7 +49,32 @@ def control_database(commant):
 
 def assort_event(event):
     text = event.message.text
-    if text.find('#') >= 0:
+    if text.startswith('broadcast '):  # broadcast 20190505
+        date = text.split(' ')[1]
+        print("Getting broadcast result: " + date)
+        result = line_bot_api.get_message_delivery_broadcast(date)
+        line_bot_api.reply_message(
+            event.reply_token, [
+                TextSendMessage(text='Number of sent broadcast messages: ' + date),
+                TextSendMessage(text='status: ' + str(result.status)),
+                TextSendMessage(text='success: ' + str(result.success)),
+            ]
+        )
+    elif text == 'image_carousel':
+        image_carousel_template = ImageCarouselTemplate(columns=[
+            ImageCarouselColumn(image_url='https://via.placeholder.com/1024x1024',
+                                action=DatetimePickerAction(label='datetime',
+                                                            data='datetime_postback',
+                                                            mode='datetime')),
+            ImageCarouselColumn(image_url='https://via.placeholder.com/1024x1024',
+                                action=DatetimePickerAction(label='date',
+                                                            data='date_postback',
+                                                            mode='date'))
+        ])
+        template_message = TemplateSendMessage(
+            alt_text='ImageCarousel alt text', template=image_carousel_template)
+        line_bot_api.reply_message(event.reply_token, template_message)
+    elif text.find('#') >= 0:
         check_text_key(text, event)
     elif text == '測試':
         if isinstance(event.source, SourceUser):
@@ -76,14 +101,15 @@ def assort_event(event):
 def check_text_key(text, event):
     if text.find('修羅場') >= 0:
         texts = text.split(' ')
-        if len(texts) < 3:
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text="場次名稱跟時間是？"))
+        replyText = ''
+        if len(texts) < 1:
+            replyText = '場次名稱跟時間(yyyy-mm-dd)？'
+        elif len(texts) < 2:
+            replyText = '場次時間(yyyy-mm-dd)？'
         else:
             replyText = '%s的修羅場開囉！截稿日是%s' %(texts[1], texts[2])
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text=replyText))
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=replyText))
     else:
         pass
