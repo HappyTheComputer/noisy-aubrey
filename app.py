@@ -28,7 +28,6 @@ cur=conn.cursor()
 
 cur.execute('SELECT VERSION()')
 results=cur.fetchall()
-print ("Database version : %s " % results)
 
 conn.commit()
 cur.close()
@@ -115,6 +114,12 @@ import replyFriend as rf
 @handler.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
     rf.reply_method(line_bot_api, event)
+    # 
+    text = event.message.text
+    if text == 'Database':
+        line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=results))
 
 @app.route('/static/<path:path>')
 def send_static_content(path):
