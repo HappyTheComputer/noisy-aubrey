@@ -1,6 +1,9 @@
 import os
 import sys
 
+from linebot import (
+    LineBotApi
+)
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
     SourceUser, SourceGroup, SourceRoom,
