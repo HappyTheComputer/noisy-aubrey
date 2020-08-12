@@ -49,7 +49,9 @@ def control_database(commant):
 
 def assort_event(event):
     text = event.message.text
-    if text == '#測試':
+    if text.find('#'):
+        check_text_key(text)
+    elif text == '測試':
         if isinstance(event.source, SourceUser):
             profile = line_bot_api.get_profile(event.source.user_id)
             line_bot_api.reply_message(
@@ -61,27 +63,26 @@ def assort_event(event):
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text="你是誰啊？"))
-    elif text == '#修羅場':
-        if isinstance(event.source, SourceUser):
-            profile = line_bot_api.get_profile(event.source.user_id)
-            line_bot_api.reply_message(
-                event.reply_token, [
-                    TextSendMessage(text= profile.display_name + '要趕稿囉！')
-                ]
-            )
-    elif text == '#測試參數':
-        quota = line_bot_api.get_message_quota()
-        line_bot_api.reply_message(
-            event.reply_token, [
-                TextSendMessage(text='type: ' + quota.type),
-                TextSendMessage(text='value: ' + str(quota.value))
-            ]
-        )
-    elif text == '#資料庫':
+    elif text == '資料庫':
         results = control_database('SELECT VERSION()')
         
         replyText = "Database version :\n%s " % results
         line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=replyText))
+    else:
+        pass
+    
+def check_text_key(text):
+    if text.find('修羅場'):
+        texts = text.split(' ')
+        if len(texts) < 3:
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text="場次名稱跟時間是？"))
+        else:
+            replyText = '%s的修羅場開囉！截稿日是%s' %(texts[1], texts[2])
+            line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=replyText))
     else:

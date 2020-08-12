@@ -1,9 +1,9 @@
-CREATE TABLE convention(
+CREATE TABLE IF NOT EXISTS convention(
    convention_name VARCHAR (50) UNIQUE NOT NULL,
    convention_date DATE UNIQUE NOT NULL,
 );
 
-CREATE TABLE workers(
+CREATE TABLE IF NOT EXISTS workers(
     # worker_id serial PRIMARY KEY,
    worker_id VARCHAR (50) UNIQUE NOT NULL,
    convention_name VARCHAR (50) UNIQUE NOT NULL,
