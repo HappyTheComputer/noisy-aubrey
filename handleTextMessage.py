@@ -49,7 +49,7 @@ def control_database(commant):
 
 def assort_event(event):
     text = event.message.text
-    if text.find('#'):
+    if text.find('#') >= 0:
         check_text_key(text, event)
     elif text == '測試':
         if isinstance(event.source, SourceUser):
