@@ -52,22 +52,30 @@ def assort_event(event):
     if text.startswith('#神'):
         check_text_key(text, event)
     elif text == '測試':
-        if isinstance(event.source, SourceUser) or isinstance(event.source, SourceGroup):
-            profile = line_bot_api.get_profile(event.source.user_id)
-            if not profile:
-                line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text="你是誰啊？媽媽說過不能跟陌生人說話，加好友再來戰。"))
-            else:
-                line_bot_api.reply_message(
+        
+        profile = line_bot_api.get_profile(event.source.user_id)
+        testText = '%s and %s' %(event.source, profile)
+        line_bot_api.reply_message(
                     event.reply_token, [
-                        TextSendMessage(text='不要以為你是' + profile.display_name + '就了不起哦！')
+                        TextSendMessage(text=testText)
                     ]
-                )
-        else:
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text="啥？"))
+        #         )
+        # if isinstance(event.source, SourceUser) or isinstance(event.source, SourceGroup):
+        #     profile = line_bot_api.get_profile(event.source.user_id)
+        #     if not profile:
+        #         line_bot_api.reply_message(
+        #         event.reply_token,
+        #         TextSendMessage(text="你是誰啊？媽媽說過不能跟陌生人說話，加好友再來戰。"))
+        #     else:
+        #         line_bot_api.reply_message(
+        #             event.reply_token, [
+        #                 TextSendMessage(text='不要以為你是' + profile.display_name + '就了不起哦！')
+        #             ]
+        #         )
+        # else:
+        #     line_bot_api.reply_message(
+        #         event.reply_token,
+        #         TextSendMessage(text="啥？"))
     elif text == '資料庫':
         results = control_database('SELECT VERSION()')
         
