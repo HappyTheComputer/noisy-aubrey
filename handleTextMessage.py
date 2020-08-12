@@ -53,8 +53,8 @@ def assort_event(event):
         check_text_key(text, event)
     elif text == '測試':
         if isinstance(event.source, SourceUser) or isinstance(event.source, SourceGroup):
-            if 'user_id' in event.source:
-                profile = line_bot_api.get_profile(event.source.user_id)
+            profile = line_bot_api.get_profile(event.source.user_id)
+            if profile:
                 line_bot_api.reply_message(
                     event.reply_token, [
                         TextSendMessage(text='不要以為你是' + profile.display_name + '就了不起哦！')
