@@ -106,7 +106,7 @@ import replyFriend as rf
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
-    rf.reply_spideypool_party(line_bot_api, event)
+    rf.reply_method(line_bot_api, event)
 
 @app.route('/static/<path:path>')
 def send_static_content(path):
