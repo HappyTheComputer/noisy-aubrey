@@ -20,19 +20,6 @@ import json
 import os
 import sys
 import tempfile
-import psycopg2
-
-# 連線資料庫
-DATABASE_URL = os.environ['DATABASE_URL']
-conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-cur=conn.cursor()
-# 輸入資料庫指令
-cur.execute('SELECT VERSION()')
-results=cur.fetchall()
-# 除了Delete之外的指令執行都需要commit()
-conn.commit()
-# 結束連線
-cur.close()
 
 from argparse import ArgumentParser
 
@@ -40,7 +27,7 @@ from flask import Flask, request, abort, send_from_directory
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from linebot import (
-    LineBotApi, WebhookHandler
+    WebhookHandler
 )
 from linebot.exceptions import (
     LineBotApiError, InvalidSignatureError
@@ -67,16 +54,13 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_host=1, x_proto=1)
 
 # get channel_secret and channel_access_token from your environment variable
 channel_secret = os.getenv('LINE_CHANNEL_SECRET', None)
-channel_access_token = os.getenv('LINE_CHANNEL_ACCESS_TOKEN', None)
-if channel_secret is None or channel_access_token is None:
-    print('Specify LINE_CHANNEL_SECRET and LINE_CHANNEL_ACCESS_TOKEN as environment variables.')
+if channel_secret is None:
+    print('Specify LINE_CHANNEL_SECRET as environment variables.')
     sys.exit(1)
 
-line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
 
 static_tmp_path = os.path.join(os.path.dirname(__file__), 'static', 'tmp')
-
 
 # function for create tmp dir for download content
 def make_static_tmp_dir():
@@ -115,14 +99,7 @@ import handleTextMessage as htm
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
-    text = event.message.text
-    if text == 'Database':
-        replyText = "Database version :\n%s " % results
-        line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text=replyText))
-    else:
-        htm.assort_event(event)
+    htm.assort_event(event)
 
 @app.route('/static/<path:path>')
 def send_static_content(path):
