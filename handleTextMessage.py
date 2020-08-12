@@ -52,7 +52,7 @@ def assort_event(event):
     if text.startswith('#神'):
         check_text_key(text, event)
     elif text == '測試':
-        if isinstance(event.source, SourceUser):
+        if isinstance(event.source, SourceUser) or isinstance(event.source, SourceGroup):
             profile = line_bot_api.get_profile(event.source.user_id)
             line_bot_api.reply_message(
                 event.reply_token, [
