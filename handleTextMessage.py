@@ -54,16 +54,16 @@ def assort_event(event):
     elif text == '測試':
         if isinstance(event.source, SourceUser) or isinstance(event.source, SourceGroup):
             profile = line_bot_api.get_profile(event.source.user_id)
-            if profile:
+            if not profile:
+                line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text="你是誰啊？媽媽說過不能跟陌生人說話，加好友再來戰。"))
+            else:
                 line_bot_api.reply_message(
                     event.reply_token, [
                         TextSendMessage(text='不要以為你是' + profile.display_name + '就了不起哦！')
                     ]
                 )
-            else:
-                line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text="你是誰啊？媽媽說過不能跟陌生人說話，加好友再來戰。"))
         else:
             line_bot_api.reply_message(
                 event.reply_token,
