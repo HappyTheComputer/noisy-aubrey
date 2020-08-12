@@ -15,6 +15,7 @@ from linebot.models import (
     SeparatorComponent, QuickReply, QuickReplyButton,
     ImageSendMessage)
 
+
 def reply_method(line_bot_api, event):
     text = event.message.text
     if text == '測試':

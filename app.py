@@ -113,14 +113,14 @@ import replyFriend as rf
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
-    rf.reply_method(line_bot_api, event)
-    # 
     text = event.message.text
     if text == 'Database':
-        replyText = "Database version : %s " % results
+        replyText = "Database version :\n%s " % results
         line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=replyText))
+    else:
+        rf.reply_method(line_bot_api, event)
 
 @app.route('/static/<path:path>')
 def send_static_content(path):
