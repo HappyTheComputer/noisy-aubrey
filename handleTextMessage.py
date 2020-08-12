@@ -95,7 +95,7 @@ def check_text_key(text, event):
             "11538":[51626494, 51626533],
             "11539":[52114110, 52114149]
         }
-        packageIDs = askGod.keys()
+        packageIDs = askGod.keys().copy()
         package = random.choice(packageIDs)
         sticker = random.randint(askGod[package][0], askGod[package][1])
         line_bot_api.reply_message(
