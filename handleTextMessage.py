@@ -50,7 +50,7 @@ def control_database(commant):
 def assort_event(event):
     text = event.message.text
     if text.find('#'):
-        check_text_key(text)
+        check_text_key(text, event)
     elif text == '測試':
         if isinstance(event.source, SourceUser):
             profile = line_bot_api.get_profile(event.source.user_id)
@@ -73,7 +73,7 @@ def assort_event(event):
     else:
         pass
     
-def check_text_key(text):
+def check_text_key(text, event):
     if text.find('修羅場'):
         texts = text.split(' ')
         if len(texts) < 3:
