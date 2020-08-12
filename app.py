@@ -117,9 +117,10 @@ def handle_text_message(event):
     # 
     text = event.message.text
     if text == 'Database':
+        replyText = "Database version : %s " % results
         line_bot_api.reply_message(
                 event.reply_token,
-                TextSendMessage(text=results))
+                TextSendMessage(text=replyText))
 
 @app.route('/static/<path:path>')
 def send_static_content(path):
