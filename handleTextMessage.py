@@ -74,7 +74,7 @@ def assort_event(event):
         pass
     
 def check_text_key(text, event):
-    if text.find('修羅場'):
+    if text.find('修羅場') >= 0:
         texts = text.split(' ')
         if len(texts) < 3:
             line_bot_api.reply_message(
