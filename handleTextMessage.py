@@ -61,7 +61,7 @@ def assort_event(event):
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text="你是誰啊？"))
-    elif text == '開修羅場':
+    elif text == '#修羅場':
         if isinstance(event.source, SourceUser):
             profile = line_bot_api.get_profile(event.source.user_id)
             line_bot_api.reply_message(
@@ -69,6 +69,14 @@ def assort_event(event):
                     TextSendMessage(text= profile.display_name + '要趕稿囉！')
                 ]
             )
+    elif text == '#測試參數':
+        quota = line_bot_api.get_message_quota()
+        line_bot_api.reply_message(
+            event.reply_token, [
+                TextSendMessage(text='type: ' + quota.type),
+                TextSendMessage(text='value: ' + str(quota.value))
+            ]
+        )
     elif text == '#資料庫':
         results = control_database('SELECT VERSION()')
         
