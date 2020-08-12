@@ -34,19 +34,22 @@ import psycopg2
 
 # 連線資料庫
 DATABASE_URL = os.environ['DATABASE_URL']
-conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-cur=conn.cursor()
-# 輸入資料庫指令
-cur.execute('SELECT VERSION()')
-results=cur.fetchall()
-# 除了Delete之外的指令執行都需要commit()
-conn.commit()
-# 結束連線
-cur.close()
+
+def control_database(commant):
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    cur=conn.cursor()
+    # 輸入資料庫指令
+    cur.execute(commant)
+    results=cur.fetchall()
+    # 除了Delete之外的指令執行都需要commit()
+    conn.commit()
+    # 結束連線
+    cur.close()
+    return results
 
 def assort_event(event):
     text = event.message.text
-    if text == '測試':
+    if text == '#測試':
         if isinstance(event.source, SourceUser):
             profile = line_bot_api.get_profile(event.source.user_id)
             line_bot_api.reply_message(
@@ -66,7 +69,9 @@ def assort_event(event):
                     TextSendMessage(text= profile.display_name + '要趕稿囉！')
                 ]
             )
-    elif text == 'Database':
+    elif text == '#資料庫':
+        results = control_database('SELECT VERSION()')
+        
         replyText = "Database version :\n%s " % results
         line_bot_api.reply_message(
                 event.reply_token,
