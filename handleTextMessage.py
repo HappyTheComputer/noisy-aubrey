@@ -15,8 +15,15 @@ from linebot.models import (
     SeparatorComponent, QuickReply, QuickReplyButton,
     ImageSendMessage)
 
+# get channel_secret and channel_access_token from your environment variable
+channel_access_token = os.getenv('LINE_CHANNEL_ACCESS_TOKEN', None)
+if channel_access_token is None:
+    print('Specify LINE_CHANNEL_ACCESS_TOKEN as environment variables.')
+    sys.exit(1)
 
-def reply_method(line_bot_api, event):
+line_bot_api = LineBotApi(channel_access_token)
+
+def assort_event(event):
     text = event.message.text
     if text == '測試':
         if isinstance(event.source, SourceUser):

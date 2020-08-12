@@ -22,14 +22,16 @@ import sys
 import tempfile
 import psycopg2
 
+# 連線資料庫
 DATABASE_URL = os.environ['DATABASE_URL']
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 cur=conn.cursor()
-
+# 輸入資料庫指令
 cur.execute('SELECT VERSION()')
 results=cur.fetchall()
-
+# 除了Delete之外的指令執行都需要commit()
 conn.commit()
+# 結束連線
 cur.close()
 
 from argparse import ArgumentParser
@@ -109,7 +111,7 @@ def callback():
 
     return 'OK'
 
-import replyFriend as rf
+import handleTextMessage as htm
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
@@ -120,7 +122,7 @@ def handle_text_message(event):
                 event.reply_token,
                 TextSendMessage(text=replyText))
     else:
-        rf.reply_method(line_bot_api, event)
+        htm.assort_event(event)
 
 @app.route('/static/<path:path>')
 def send_static_content(path):
