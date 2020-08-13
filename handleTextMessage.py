@@ -83,7 +83,7 @@ def check_text_key(text, event):
             event.reply_token,
             TextSendMessage(text=rand))
     elif text.find('運勢') >= 0:
-        askGod = ['大吉大利！', '中吉之戰！', '小吉不嫌棄。', '吉也佳～', '後悔末吉QQ', '凶無大志。', '大凶']
+        askGod = ['大吉大利！', '中吉之戰！', '小吉不嫌棄。', '吉也佳～', '後悔末吉QQ', '凶無大志。', '大凶之兆。']
         rand = random.choice(askGod)
         line_bot_api.reply_message(
             event.reply_token,
