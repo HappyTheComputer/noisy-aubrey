@@ -36,7 +36,7 @@ def get_chance_detail(godname:str, index:int):
     imgs = body.select("a img")
     for i in imgs:
         if i['src'].rfind('.jpg') >= 0:
-            chanceDict['image'] = 'http://www.chance.org.tw/' + i['src']
+            chanceDict['image'] = 'http://www.chance.org.tw/籤詩集/' + i['src']
             # print(chanceDict['image'])
             break
     # 詩籤文字

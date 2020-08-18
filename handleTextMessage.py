@@ -82,6 +82,8 @@ def test_some_function(text, event):
                 event.reply_token,
                 TextSendMessage(text=replyText))
 
+import pickChance
+
 def ask_god_function(text, event):
     if text.find('杯') >= 0:
         askGod = ['凸凸-沒杯啦！', '平凸-聖杯啦！', '凸平-聖杯啦！', '平平-笑杯啦！']
@@ -95,6 +97,16 @@ def ask_god_function(text, event):
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=rand))
+    elif text.find('籤') >= 0:
+        pikeId = random.randint(1, 60)
+        chance = pickChance.pick_sixty_years_chance(pikeId)
+        image_chance = ImageCarouselTemplate(columns=[
+            ImageCarouselColumn(image_url=chance['image'],
+                                action=URIAction(label='六十甲子籤', uri=chance['url']))
+        ])
+        pick_chance_message = TemplateSendMessage(
+            alt_text='六十甲子籤', template=image_chance)
+        line_bot_api.reply_message(event.reply_token, pick_chance_message)
     else:
         # 回官方貼圖
         askGod = {
