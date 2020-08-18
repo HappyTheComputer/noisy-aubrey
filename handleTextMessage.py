@@ -100,32 +100,23 @@ def ask_god_function(text, event):
     elif text.find('籤') >= 0:
         pickId = random.randint(1, 60)
         chance = pickChance.pick_sixty_years_chance(pickId)
-        # 
-        pickMassage = BubbleContainer(
-            direction='ltr',
-            title=BoxComponent(
-                layout='vertical',
-                contents=[
-                    # title
-                    TextComponent(text=chance['poems'][0], weight='bold', size='xl'),
-                    SeparatorComponent(),
-                    TextComponent(text=chance['poems'][1], size='sm'),
-                    TextComponent(text=chance['poems'][2], size='sm'),
-                    SeparatorComponent(),
-                    TextComponent(text=chance['poems'][3], weight='bold', size='md'),
-                    SeparatorComponent(),
-                    ButtonComponent(
-                        style='link',
-                        height='sm',
-                        action=URIAction(label='解籤', uri=chance['url'])
+        # https://qiangua.temple01.com/images/qianshi/qianshi_bg.jpg
+        pick_template = TemplateSendMessage(
+            alt_text=chance['poems'][0],
+            template=ButtonsTemplate(
+                title=chance['poems'][1] + chance['poems'][2],
+                text=chance['poems'][3],
+                actions=[
+                    URITemplateAction(
+                        label='解籤',
+                        uri=chance['url']
                     )
-                ],
+                ]
             )
         )
-        message = FlexSendMessage(alt_text="Pick!", contents=pickMassage)
         line_bot_api.reply_message(
             event.reply_token,
-            message
+            pick_template
         )
     else:
         # 回官方貼圖
