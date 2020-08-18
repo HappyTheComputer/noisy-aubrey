@@ -91,7 +91,7 @@ def ask_god_function(text, event):
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=rand))
-    elif text.find('運勢') >= 0:
+    elif text.find('吉凶') >= 0:
         askGod = ['大吉大利！', '中吉之戰！', '小吉不嫌棄。', '吉也佳～', '後悔末吉QQ', '凶無大志。', '大凶之兆。']
         rand = random.choice(askGod)
         line_bot_api.reply_message(
@@ -102,7 +102,7 @@ def ask_god_function(text, event):
         chance = pickChance.pick_sixty_years_chance(pickId)
         # print(chance)
         pick_template = ButtonsTemplate(
-            title=chance['poems'][1] + chance['poems'][2], 
+            title=chance['poems'][0] + chance['poems'][1] + chance['poems'][2], 
             text=chance['poems'][3], 
             actions=[
                 URIAction(label='解籤', uri=chance['url'])
