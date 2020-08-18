@@ -49,9 +49,20 @@ def control_database(commant):
 
 def assort_event(event):
     text = event.message.text
-    if text.startswith('#神'):
-        check_text_key(text, event)
-    elif text == '測試':
+    if isinstance(event.source, SourceUser):
+        ask_god_function(text, event)
+    elif isinstance(event.source, SourceRoom) or isinstance(event.source, SourceGroup):
+        if text.startswith('#神'):
+            ask_god_function(text, event)
+        else:
+            test_some_function(text, event)
+    else:
+        test_some_function(text, event)
+        
+import random
+
+def test_some_function(text, event):
+    if text == '測試':
         if isinstance(event.source, SourceUser) or isinstance(event.source, SourceGroup):
             profile = line_bot_api.get_profile(event.source.user_id)
             line_bot_api.reply_message(
@@ -70,12 +81,8 @@ def assort_event(event):
         line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=replyText))
-    else:
-        pass
 
-import random
-
-def check_text_key(text, event):
+def ask_god_function(text, event):
     if text.find('杯') >= 0:
         askGod = ['凸凸-沒杯啦！', '平凸-聖杯啦！', '凸平-聖杯啦！', '平平-笑杯啦！']
         rand = random.choice(askGod)
