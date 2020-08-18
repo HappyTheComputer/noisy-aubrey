@@ -109,7 +109,7 @@ def ask_god_function(text, event):
             ])
         pick_message = TemplateSendMessage(
             alt_text=chance['poems'][0], template=pick_template)
-        line_bot_api.reply_message(event.reply_token, template_message)
+        line_bot_api.reply_message(event.reply_token, pick_message)
 
     else:
         # 回官方貼圖
