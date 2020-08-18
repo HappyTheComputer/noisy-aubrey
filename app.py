@@ -27,7 +27,7 @@ from flask import Flask, request, abort, send_from_directory
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from linebot import (
-    WebhookHandler
+    WebhookHandler, LineBotApi
 )
 from linebot.exceptions import (
     LineBotApiError, InvalidSignatureError
