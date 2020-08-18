@@ -21,7 +21,7 @@ def pick_sixty_years_chance(index):
     soup = BeautifulSoup(r.text,'lxml') #將網頁資料以html.parser
     title = soup.select("div.fs_poetry_w_top")
     for t in title:
-        temp = t.text.replace('\r', '').replace('\t', '').replace('\n', '').replace('\u3000', '')
+        temp = t.text.replace('○', '\t').replace('●', '\t')
         chanceDict['poems'].append(temp)
     poem = soup.select("div.fs_poetry_w_text")
     for p in poem:
