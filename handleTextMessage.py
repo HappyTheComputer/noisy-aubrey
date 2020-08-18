@@ -98,42 +98,31 @@ def ask_god_function(text, event):
             event.reply_token,
             TextSendMessage(text=rand))
     elif text.find('籤') >= 0:
-        pikeId = random.randint(1, 60)
-        chance = pickChance.pick_sixty_years_chance(pikeId)
+        pickId = random.randint(1, 60)
+        chance = pickChance.pick_sixty_years_chance(pickId)
         # 
-        bubble = BubbleContainer(
+        pickMassage = BubbleContainer(
             direction='ltr',
-            hero=ImageComponent(
-                url=chance['image'],
-                size='full',
-                action=URIAction(uri=chance['url'], label='label')
-            ),
-            body=BoxComponent(
+            title=BoxComponent(
                 layout='vertical',
                 contents=[
                     # title
-                    TextComponent(text='Brown Cafe', weight='bold', size='xl'),
-                    TextComponent(text='Brown Cafe', weight='bold', size='xl'),
-                    TextComponent(text='Brown Cafe', weight='bold', size='xl'),
-                    TextComponent(text='Brown Cafe', weight='bold', size='xl'),
-                ],
-            ),
-            footer=BoxComponent(
-                layout='vertical',
-                spacing='sm',
-                contents=[
-                    # callAction, separator, websiteAction
-                    SpacerComponent(size='sm'),
-                    # websiteAction
+                    TextComponent(text=chance[0], weight='bold', size='xl'),
+                    SeparatorComponent(),
+                    TextComponent(text=chance[1], size='sm'),
+                    TextComponent(text=chance[2], size='sm'),
+                    SeparatorComponent(),
+                    TextComponent(text=chance[3], weight='bold', size='md'),
+                    SeparatorComponent(),
                     ButtonComponent(
                         style='link',
                         height='sm',
                         action=URIAction(label='解籤', uri=chance['url'])
                     )
-                ]
-            ),
+                ],
+            )
         )
-        message = FlexSendMessage(alt_text="chance", contents=bubble)
+        message = FlexSendMessage(alt_text="Pick!", contents=pickMassage)
         line_bot_api.reply_message(
             event.reply_token,
             message
