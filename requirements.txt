@@ -1,5 +1,6 @@
 line-bot-sdk
 beautifulsoup4
 requests
+lxml
 flask
 psycopg2
