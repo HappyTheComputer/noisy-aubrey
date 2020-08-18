@@ -101,23 +101,16 @@ def ask_god_function(text, event):
         pickId = random.randint(1, 60)
         chance = pickChance.pick_sixty_years_chance(pickId)
         # https://qiangua.temple01.com/images/qianshi/qianshi_bg.jpg
-        pick_template = TemplateSendMessage(
-            alt_text=chance['poems'][0],
-            template=ButtonsTemplate(
-                title=chance['poems'][1] + chance['poems'][2],
-                text=chance['poems'][3],
-                actions=[
-                    URITemplateAction(
-                        label='解籤',
-                        uri=chance['url']
-                    )
-                ]
-            )
-        )
-        line_bot_api.reply_message(
-            event.reply_token,
-            pick_template
-        )
+        pick_template = ButtonsTemplate(
+            title=chance['poems'][1] + chance['poems'][2], 
+            text=chance['poems'][3], 
+            actions=[
+                URIAction(label='解籤', uri=chance['url'])
+            ])
+        pick_message = TemplateSendMessage(
+            alt_text=chance['poems'][0], template=pick_template)
+        line_bot_api.reply_message(event.reply_token, template_message)
+
     else:
         # 回官方貼圖
         askGod = {
