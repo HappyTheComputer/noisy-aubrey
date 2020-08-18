@@ -107,12 +107,12 @@ def ask_god_function(text, event):
                 layout='vertical',
                 contents=[
                     # title
-                    TextComponent(text=chance[0], weight='bold', size='xl'),
+                    TextComponent(text=chance['poems'][0], weight='bold', size='xl'),
                     SeparatorComponent(),
-                    TextComponent(text=chance[1], size='sm'),
-                    TextComponent(text=chance[2], size='sm'),
+                    TextComponent(text=chance['poems'][1], size='sm'),
+                    TextComponent(text=chance['poems'][2], size='sm'),
                     SeparatorComponent(),
-                    TextComponent(text=chance[3], weight='bold', size='md'),
+                    TextComponent(text=chance['poems'][3], weight='bold', size='md'),
                     SeparatorComponent(),
                     ButtonComponent(
                         style='link',

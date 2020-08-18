@@ -25,10 +25,10 @@ def pick_sixty_years_chance(index):
     poem = soup.select("div.fs_poetry_w_text")
     for p in poem:
         chanceDict['poems'].append(p.text)
-    print(chanceDict['poems'])
+    
     # detail = soup.find_all("div", class_="fs_box fs_left")
     # for d in detail:
     #     print(d.text)
     return chanceDict
 
-pick_sixty_years_chance(19)
+# pick_sixty_years_chance(19)
