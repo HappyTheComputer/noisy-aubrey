@@ -1,3 +1,5 @@
 line-bot-sdk
+BeautifulSoup
+requests
 flask
 psycopg2
