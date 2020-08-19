@@ -1,5 +1,7 @@
 import os
 import sys
+import errno
+import tempfile
 
 from AskGod import random_ask
 from DataBaseApi import control_database
