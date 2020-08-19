@@ -1,6 +1,5 @@
 import os
 import sys
-import random
 
 from AskGod import random_ask
 from DataBaseApi import control_database
@@ -212,7 +211,7 @@ def ask_god_message(text, event):
     elif godAnswer['type'] == 'Pick':
         titleText = godAnswer['pick']['poems'][0] + godAnswer['pick']['poems'][1] + godAnswer['pick']['poems'][2]
         poemsText = godAnswer['pick']['poems'][3]
-        minText = chance['poems'][0] + chance['poems'][1]
+        minText = godAnswer['pick']['poems'][0] + godAnswer['pick']['poems'][1]
         pick_template = ButtonsTemplate(
             title=titleText, 
             text=poemsText, 
