@@ -87,29 +87,28 @@ def callback():
 
     return 'OK'
 
-import LineBot
-aubrey = LineBot()
+from LineBot import LineBotApi as api
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
-    aubrey.handle_text_message(event)
+    api.handle_text_message(event)
 
 @handler.add(MessageEvent, message=LocationMessage)
 def handle_location_message(event):
-    aubrey.handle_location_message(event)
+    api.handle_location_message(event)
 
 @handler.add(MessageEvent, message=StickerMessage)
 def handle_sticker_message(event):
-    aubrey.handle_sticker_message(event)
+    api.handle_sticker_message(event)
 
 # Other Message Type
 @handler.add(MessageEvent, message=(ImageMessage, VideoMessage, AudioMessage))
 def handle_content_message(event):
-    aubrey.handle_content_message(event)
+    api.handle_content_message(event)
 
 @handler.add(MessageEvent, message=FileMessage)
 def handle_file_message(event):
-    aubrey.handle_file_message(event)
+    api.handle_file_message(event)
 
 @handler.add(FollowEvent)
 def handle_follow(event):
