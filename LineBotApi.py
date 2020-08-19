@@ -67,7 +67,7 @@ def make_static_tmp_dir():
         else:
             raise
 
-def callback(body, signature):
+def linebotcallback(body, signature):
     try:
         handler.handle(body, signature)
     except LineBotApiError as e:
@@ -103,7 +103,7 @@ def handle_location_message(event):
 
 @handler.add(MessageEvent, message=StickerMessage)
 def handle_sticker_message(event):
-    ask_god_message('', event)
+    print(event.message.package_id, event.message.sticker_id)
 
 # Other Message Type
 @handler.add(MessageEvent, message=(ImageMessage, VideoMessage, AudioMessage))
