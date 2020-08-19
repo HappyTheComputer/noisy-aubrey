@@ -5,7 +5,7 @@ import random
 import pickChance
 
 from linebot import (
-    LineBotApi
+    WebhookHandler, LineBotApi
 )
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
