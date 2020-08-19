@@ -29,8 +29,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_host=1, x_proto=1)
 
-from LineBotApi import LineBotApi
-aubrey = LineBotApi()
+import LineBotApi
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -42,7 +41,7 @@ def callback():
     app.logger.info("Request body: " + body)
 
     # handle webhook body
-    aubrey.callback(body, signature)
+    linebotcallback(body, signature)
 
     return 'OK'
 
