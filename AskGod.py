@@ -40,6 +40,7 @@ GameKeyWords = {
         '六十甲子籤': 60
     },
     'anyothermessage': {
+        'list':[11537, 11538, 11539],
         "11537":[52002734, 52002773],
         "11538":[51626494, 51626533],
         "11539":[52114110, 52114149]
@@ -63,12 +64,12 @@ def random_ask(askText):
                 godAnswer['type'] = 'Pick'
                 godAnswer['pick'] = pick_sixty_years_chance(pickId)
                 break
-            
+
     if not godAnswer['type']:
         # 沒有搜到關鍵字都回貼圖
         godAnswer['type'] = 'Sticker'
-        package = random.choice(GameKeyWords['anyothermessage'].keys())
-        sticker = random.randint(GameKeyWords['anyothermessage'][package][0], GameKeyWords['anyothermessage'][package][1])
+        package = random.choice(GameKeyWords['anyothermessage']['list'])
+        sticker = random.randint(GameKeyWords['anyothermessage'][str(package)][0], GameKeyWords['anyothermessage'][str(package)][1])
         godAnswer['package'] = package
         godAnswer['sticker'] = sticker
     return godAnswer
