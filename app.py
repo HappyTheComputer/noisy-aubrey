@@ -33,21 +33,11 @@ from linebot.exceptions import (
     LineBotApiError, InvalidSignatureError
 )
 from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage,
-    SourceUser, SourceGroup, SourceRoom,
-    TemplateSendMessage, ConfirmTemplate, MessageAction,
-    ButtonsTemplate, ImageCarouselTemplate, ImageCarouselColumn, URIAction,
-    PostbackAction, DatetimePickerAction,
-    CameraAction, CameraRollAction, LocationAction,
-    CarouselTemplate, CarouselColumn, PostbackEvent,
+    MessageEvent, TextMessage, TextSendMessage, PostbackEvent,
     StickerMessage, StickerSendMessage, LocationMessage, LocationSendMessage,
     ImageMessage, VideoMessage, AudioMessage, FileMessage,
     UnfollowEvent, FollowEvent, JoinEvent, LeaveEvent, BeaconEvent,
-    MemberJoinedEvent, MemberLeftEvent,
-    FlexSendMessage, BubbleContainer, ImageComponent, BoxComponent,
-    TextComponent, SpacerComponent, IconComponent, ButtonComponent,
-    SeparatorComponent, QuickReply, QuickReplyButton,
-    ImageSendMessage)
+    MemberJoinedEvent, MemberLeftEvent, QuickReply)
 
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_host=1, x_proto=1)
@@ -97,80 +87,29 @@ def callback():
 
     return 'OK'
 
-import handleTextMessage as htm
+from LineBot import LineBot
+aubrey = LineBot()
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
-    htm.assort_event(event)
+    aubrey.handle_text_message(event)
 
 @handler.add(MessageEvent, message=LocationMessage)
 def handle_location_message(event):
-    line_bot_api.reply_message(
-        event.reply_token,
-        LocationSendMessage(
-            title='Location', address=event.message.address,
-            latitude=event.message.latitude, longitude=event.message.longitude
-        )
-    )
-
+    aubrey.handle_location_message(event)
 
 @handler.add(MessageEvent, message=StickerMessage)
 def handle_sticker_message(event):
-    line_bot_api.reply_message(
-        event.reply_token,
-        StickerSendMessage(
-            package_id=event.message.package_id,
-            sticker_id=event.message.sticker_id)
-    )
-
+    aubrey.handle_sticker_message(event)
 
 # Other Message Type
 @handler.add(MessageEvent, message=(ImageMessage, VideoMessage, AudioMessage))
 def handle_content_message(event):
-    if isinstance(event.message, ImageMessage):
-        ext = 'jpg'
-    elif isinstance(event.message, VideoMessage):
-        ext = 'mp4'
-    elif isinstance(event.message, AudioMessage):
-        ext = 'm4a'
-    else:
-        return
-
-    message_content = line_bot_api.get_message_content(event.message.id)
-    with tempfile.NamedTemporaryFile(dir=static_tmp_path, prefix=ext + '-', delete=False) as tf:
-        for chunk in message_content.iter_content():
-            tf.write(chunk)
-        tempfile_path = tf.name
-
-    dist_path = tempfile_path + '.' + ext
-    dist_name = os.path.basename(dist_path)
-    os.rename(tempfile_path, dist_path)
-
-    line_bot_api.reply_message(
-        event.reply_token, [
-            TextSendMessage(text='Save content.'),
-            TextSendMessage(text=request.host_url + os.path.join('static', 'tmp', dist_name))
-        ])
-
+    aubrey.handle_content_message(event)
 
 @handler.add(MessageEvent, message=FileMessage)
 def handle_file_message(event):
-    message_content = line_bot_api.get_message_content(event.message.id)
-    with tempfile.NamedTemporaryFile(dir=static_tmp_path, prefix='file-', delete=False) as tf:
-        for chunk in message_content.iter_content():
-            tf.write(chunk)
-        tempfile_path = tf.name
-
-    dist_path = tempfile_path + '-' + event.message.file_name
-    dist_name = os.path.basename(dist_path)
-    os.rename(tempfile_path, dist_path)
-
-    line_bot_api.reply_message(
-        event.reply_token, [
-            TextSendMessage(text='Save file.'),
-            TextSendMessage(text=request.host_url + os.path.join('static', 'tmp', dist_name))
-        ])
-
+    aubrey.handle_file_message(event)
 
 @handler.add(FollowEvent)
 def handle_follow(event):
@@ -190,15 +129,7 @@ def handle_leave():
 
 @handler.add(PostbackEvent)
 def handle_postback(event):
-    if event.postback.data == 'ping':
-        line_bot_api.reply_message(
-            event.reply_token, TextSendMessage(text='pong'))
-    elif event.postback.data == 'datetime_postback':
-        line_bot_api.reply_message(
-            event.reply_token, TextSendMessage(text=event.postback.params['datetime']))
-    elif event.postback.data == 'date_postback':
-        line_bot_api.reply_message(
-            event.reply_token, TextSendMessage(text=event.postback.params['date']))
+    aubrey.handle_postback(event)
 
 @handler.add(BeaconEvent)
 def handle_beacon(event):
