@@ -1,2 +1,4 @@
 Pipfile
-test
+.app_bak
+.test
+.postgresql
