@@ -2,7 +2,8 @@ import os
 import sys
 import random
 
-import pickChance
+from AskGod import random_ask
+from DataBaseApi import control_database
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -36,24 +37,6 @@ if channel_secret is None or channel_access_token is None:
 
 line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
-
-# Datebase
-import psycopg2
-
-# 連線資料庫
-DATABASE_URL = os.environ['DATABASE_URL']
-
-def control_database(commant):
-    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-    cur=conn.cursor()
-    # 輸入資料庫指令
-    cur.execute(commant)
-    results=cur.fetchall()
-    # 除了Delete之外的指令執行都需要commit()
-    conn.commit()
-    # 結束連線
-    cur.close()
-    return results
 
 static_tmp_path = os.path.join(os.path.dirname(__file__), 'static', 'tmp')
 
@@ -215,40 +198,27 @@ def test_message(text, event):
         reply_text_message(replyText, event)
 
 def ask_god_message(text, event):
-        if text.find('杯') >= 0:
-            askGod = ['凸凸-沒杯啦！', '平凸-聖杯啦！', '凸平-聖杯啦！', '平平-笑杯啦！']
-            rand = random.choice(askGod)
-            reply_text_message(rand, event)
-        elif text.find('吉凶') >= 0:
-            askGod = ['大吉大利！', '中吉之戰！', '小吉不嫌棄。', '吉也佳～', '後悔末吉QQ', '凶無大志。', '大凶之兆。']
-            rand = random.choice(askGod)
-            reply_text_message(rand, event)
-        elif text.find('籤') >= 0:
-            pickId = random.randint(1, 60)
-            chance = pickChance.pick_sixty_years_chance(pickId)
-            # print(chance)
-            pick_template = ButtonsTemplate(
-                title=chance['poems'][0] + chance['poems'][1] + chance['poems'][2], 
-                text=chance['poems'][3], 
-                actions=[
-                    URIAction(label='解籤', uri=chance['url'])
-                ])
-            pick_message = TemplateSendMessage(
-                alt_text=chance['poems'][0] + chance['poems'][1], template=pick_template)
-            line_bot_api.reply_message(event.reply_token, pick_message)
-        else:
-            # 回官方貼圖
-            askGod = {
-                "11537":[52002734, 52002773],
-                "11538":[51626494, 51626533],
-                "11539":[52114110, 52114149]
-            }
-            package = random.randint(11537, 11539)
-            sticker = random.randint(askGod[str(package)][0], askGod[str(package)][1])
-            line_bot_api.reply_message(
-                event.reply_token,
-                StickerSendMessage(
-                    package_id=package,
-                    sticker_id=sticker
-                    )
+    godAnswer = random_ask(text)
+    if godAnswer['type'] == 'Text':
+        reply_text_message(godAnswer['text'], event)
+    elif godAnswer['type'] == 'Sticker':
+        line_bot_api.reply_message(
+            event.reply_token,
+            StickerSendMessage(
+                package_id=godAnswer['package'],
+                sticker_id=godAnswer['sticker']
                 )
+            )
+    elif godAnswer['type'] == 'Pick':
+        titleText = godAnswer['pick']['poems'][0] + godAnswer['pick']['poems'][1] + godAnswer['pick']['poems'][2]
+        poemsText = godAnswer['pick']['poems'][3]
+        minText = chance['poems'][0] + chance['poems'][1]
+        pick_template = ButtonsTemplate(
+            title=titleText, 
+            text=poemsText, 
+            actions=[
+                URIAction(label='解籤', uri=godAnswer['pick']['url'])
+            ])
+        pick_message = TemplateSendMessage(
+            alt_text=minText, template=pick_template)
+        line_bot_api.reply_message(event.reply_token, pick_message)
