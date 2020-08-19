@@ -117,7 +117,7 @@ def add_worker_database(user_id):
     if not check_value_exists(tableName, 'worker_id', user_id):
         todayStr = get_current_date_str()
         insert_value(tableName, [user_id, todayStr])
-    print(select_table(tableName))
+    # print(select_table(tableName))
 
 def add_fight_field_database(group_id):
     tableName = 'fightField'
@@ -129,4 +129,4 @@ def add_fight_field_database(group_id):
     if not check_value_exists(tableName, 'group_id', group_id):
         todayStr = get_current_date_str()
         insert_value(tableName, [group_id, todayStr])
-    print(select_table(tableName))
+    # print(select_table(tableName))

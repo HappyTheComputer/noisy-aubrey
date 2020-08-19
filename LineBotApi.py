@@ -239,6 +239,7 @@ def test_message(text, event):
         testDict['text'] = '不要以為你是' + profile.display_name + '就了不起哦！'
         add_worker_database(event.source.user_id)
     elif isinstance(event.source, SourceGroup):
+        testDict['text'] = '各位下班了嗎～'
         add_fight_field_database(event.source.group_id)
     else:
         testDict['text'] = "你是誰啊？媽媽說過不能跟陌生人說話，加好友再來戰。"

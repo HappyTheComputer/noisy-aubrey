@@ -13,5 +13,6 @@ def good_morning():
         pushTo = f[0]
         if len(pushTo) > 0:
             push_image_message(pushTo, image)
+            push_text_message(pushTo, '上班囉！各位社畜們～')
 
 good_morning()
