@@ -5,7 +5,7 @@ import tempfile
 from flask import abort
 
 from AskGod import random_ask
-from DataBaseApi import test_database, add_worker_database
+from DataBaseApi import test_database, add_worker_database, add_fight_field_database
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -78,8 +78,6 @@ def handle_text_message(event):
             check_reply_message_method(godAnswer, event)
         elif text.startswith('測試'):
             test_message(text, event)
-        else:
-            print(event.source)
 
 @handler.add(MessageEvent, message=LocationMessage)
 def handle_location_message(event):
@@ -210,6 +208,20 @@ def reply_buttons_message(tempDict, event):
         alt_text=tempDict['minText'], template=btn_template)
     line_bot_api.reply_message(event.reply_token, btn_message)
 
+def push_text_message(pushTo, pushText):
+    line_bot_api.push_message(
+        pushTo, [
+            TextSendMessage(text=pushText),
+        ]
+    )
+
+def push_image_message(pushTo, pushImageUrl):
+    line_bot_api.push_message(
+        pushTo, [
+            ImageSendMessage(pushImageUrl, pushImageUrl),
+        ]
+    )
+
 def check_reply_message_method(msgDict, event):
     if msgDict['type'] == 'Text':
         reply_text_message(msgDict['text'], event)
@@ -227,7 +239,7 @@ def test_message(text, event):
         testDict['text'] = '不要以為你是' + profile.display_name + '就了不起哦！'
         add_worker_database(event.source.user_id)
     elif isinstance(event.source, SourceGroup):
-        print(event.source)
+        add_fight_field_database(event.source.group_id)
     else:
         testDict['text'] = "你是誰啊？媽媽說過不能跟陌生人說話，加好友再來戰。"
     check_reply_message_method(testDict, event)
