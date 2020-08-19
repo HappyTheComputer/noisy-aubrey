@@ -119,4 +119,14 @@ def add_worker_database(user_id):
         insert_value(tableName, [user_id, todayStr])
     print(select_table(tableName))
 
-remove_table('workers')
+def add_fight_field_database(group_id):
+    tableName = 'fightField'
+    types = {
+        "group_id": "VARCHAR(50) NOT NULL",
+        "deadline": "date"
+    }
+    create_table(tableName, types)
+    if not check_value_exists(tableName, 'group_id', group_id):
+        todayStr = get_current_date_str()
+        insert_value(tableName, [group_id, todayStr])
+    print(select_table(tableName))

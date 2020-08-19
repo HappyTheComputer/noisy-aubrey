@@ -78,6 +78,8 @@ def handle_text_message(event):
             check_reply_message_method(godAnswer, event)
         elif text.startswith('測試'):
             test_message(text, event)
+        else:
+            print(event.source)
 
 @handler.add(MessageEvent, message=LocationMessage)
 def handle_location_message(event):
@@ -220,10 +222,12 @@ def test_message(text, event):
     testDict = {'type': 'Text'}
     if text.find('資料庫') >= 0:
         testDict['text'] = ask_database()
-    elif isinstance(event.source, SourceUser) or isinstance(event.source, SourceGroup):
+    elif isinstance(event.source, SourceUser):
         profile = line_bot_api.get_profile(event.source.user_id)
         testDict['text'] = '不要以為你是' + profile.display_name + '就了不起哦！'
         add_worker_database(event.source.user_id)
+    elif isinstance(event.source, SourceGroup):
+        print(event.source)
     else:
         testDict['text'] = "你是誰啊？媽媽說過不能跟陌生人說話，加好友再來戰。"
     check_reply_message_method(testDict, event)
