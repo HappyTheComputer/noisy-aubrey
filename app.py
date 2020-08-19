@@ -87,7 +87,7 @@ def callback():
 
     return 'OK'
 
-from LineBot import LineBotApi as api
+from LineBotApi import LineBotApi as api
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
