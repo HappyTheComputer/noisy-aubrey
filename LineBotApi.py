@@ -64,14 +64,15 @@ def linebotcallback(body, signature):
 def handle_text_message(event):
     text = event.message.text
     if isinstance(event.source, SourceUser):
-        ask_god_message(text, event)
+        if text.startswith('測試'):
+            test_message(text, event)
+        else:
+            ask_god_message(text, event)
     elif isinstance(event.source, SourceRoom) or isinstance(event.source, SourceGroup):
         if text.startswith('#神'):
             ask_god_message(text, event)
         else:
             test_message(text, event)
-    else:
-        test_message(text, event)
 
 @handler.add(MessageEvent, message=LocationMessage)
 def handle_location_message(event):
@@ -203,18 +204,15 @@ def reply_buttons_message(tempDict, event):
     line_bot_api.reply_message(event.reply_token, btn_message)
 
 def test_message(text, event):
-    if text == '測試':
-        if isinstance(event.source, SourceUser) or isinstance(event.source, SourceGroup):
-            profile = line_bot_api.get_profile(event.source.user_id)
-            reply_text_message('不要以為你是' + profile.display_name + '就了不起哦！', event)
-        else:
-            reply_text_message("你是誰啊？媽媽說過不能跟陌生人說話，加好友再來戰。", event)
-
-    elif text == '資料庫':
+    if text.find('資料庫') >= 0:
         results = control_database('SELECT VERSION()')
-        
         replyText = "Database version :\n%s " % results
         reply_text_message(replyText, event)
+    elif isinstance(event.source, SourceUser) or isinstance(event.source, SourceGroup):
+        profile = line_bot_api.get_profile(event.source.user_id)
+        reply_text_message('不要以為你是' + profile.display_name + '就了不起哦！', event)
+    else:
+        reply_text_message("你是誰啊？媽媽說過不能跟陌生人說話，加好友再來戰。", event)
 
 def ask_god_message(text, event):
     godAnswer = random_ask(text)

@@ -64,9 +64,9 @@ def random_ask(askText):
                 pickId = random.randint(1, GameKeyWords[key]['六十甲子籤'])
                 godAnswer['type'] = 'Btn'
                 chance = pick_sixty_years_chance(pickId)
-                godAnswer['title'] = ''.join(chance['poems'][0:2])
+                godAnswer['title'] = ''.join(chance['poems'][0:3])
                 godAnswer['fullText'] = chance['poems'][3]
-                godAnswer['minText'] = ''.join(chance['poems'][0:1])
+                godAnswer['minText'] = ''.join(chance['poems'][0:2])
                 godAnswer['btnText'] = '解籤'
                 godAnswer['url'] = chance['url']
                 break
@@ -79,3 +79,5 @@ def random_ask(askText):
         godAnswer['package'] = package
         godAnswer['sticker'] = sticker
     return godAnswer
+
+
