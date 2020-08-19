@@ -62,8 +62,13 @@ def random_ask(askText):
                 break
             elif key == '籤':
                 pickId = random.randint(1, GameKeyWords[key]['六十甲子籤'])
-                godAnswer['type'] = 'Pick'
-                godAnswer['pick'] = pick_sixty_years_chance(pickId)
+                godAnswer['type'] = 'Btn'
+                chance = pick_sixty_years_chance(pickId)
+                godAnswer['title'] = ''.join(chance['poems'][0:2])
+                godAnswer['fullText'] = chance['poems'][3]
+                godAnswer['minText'] = ''.join(chance['poems'][0:1])
+                godAnswer['btnText'] = '解籤'
+                godAnswer['url'] = chance['url']
                 break
 
     if not godAnswer['type']:

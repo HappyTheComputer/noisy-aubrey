@@ -182,6 +182,26 @@ def reply_text_message(replyText, event):
         event.reply_token,
         TextSendMessage(text=replyText))
 
+def reply_sticker_message(package, sticker, event):
+    line_bot_api.reply_message(
+        event.reply_token,
+        StickerSendMessage(
+            package_id=package,
+            sticker_id=sticker
+            )
+        )
+
+def reply_buttons_message(tempDict, event):
+    btn_template = ButtonsTemplate(
+            title=tempDict['title'], 
+            text=tempDict['fullText'], 
+            actions=[
+                URIAction(label=tempDict['btnText'], uri=tempDict['url'])
+            ])
+    btn_message = TemplateSendMessage(
+        alt_text=tempDict['minText'], template=btn_template)
+    line_bot_api.reply_message(event.reply_token, btn_message)
+
 def test_message(text, event):
     if text == '測試':
         if isinstance(event.source, SourceUser) or isinstance(event.source, SourceGroup):
@@ -201,23 +221,6 @@ def ask_god_message(text, event):
     if godAnswer['type'] == 'Text':
         reply_text_message(godAnswer['text'], event)
     elif godAnswer['type'] == 'Sticker':
-        line_bot_api.reply_message(
-            event.reply_token,
-            StickerSendMessage(
-                package_id=godAnswer['package'],
-                sticker_id=godAnswer['sticker']
-                )
-            )
-    elif godAnswer['type'] == 'Pick':
-        titleText = godAnswer['pick']['poems'][0] + godAnswer['pick']['poems'][1] + godAnswer['pick']['poems'][2]
-        poemsText = godAnswer['pick']['poems'][3]
-        minText = godAnswer['pick']['poems'][0] + godAnswer['pick']['poems'][1]
-        pick_template = ButtonsTemplate(
-            title=titleText, 
-            text=poemsText, 
-            actions=[
-                URIAction(label='解籤', uri=godAnswer['pick']['url'])
-            ])
-        pick_message = TemplateSendMessage(
-            alt_text=minText, template=pick_template)
-        line_bot_api.reply_message(event.reply_token, pick_message)
+        reply_sticker_message(godAnswer['package'], godAnswer['sticker'], event)
+    elif godAnswer['type'] == 'Btn':
+        reply_buttons_message(godAnswer, event)
