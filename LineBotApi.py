@@ -26,11 +26,13 @@ from linebot.models import (
 
 # get channel_secret and channel_access_token from your environment variable
 channel_access_token = os.getenv('LINE_CHANNEL_ACCESS_TOKEN', None)
-if channel_access_token is None:
-    print('Specify LINE_CHANNEL_ACCESS_TOKEN as environment variables.')
+channel_secret = os.getenv('LINE_CHANNEL_SECRET', None)
+if channel_secret is None or channel_access_token is None:
+    print('Specify LINE_CHANNEL_SECRET or LINE_CHANNEL_ACCESS_TOKEN as environment variables.')
     sys.exit(1)
 
 line_bot_api = LineBotApi(channel_access_token)
+handler = WebhookHandler(channel_secret)
 
 # Datebase
 import psycopg2
@@ -50,7 +52,31 @@ def control_database(commant):
     cur.close()
     return results
 
+static_tmp_path = os.path.join(os.path.dirname(__file__), 'static', 'tmp')
+
+# function for create tmp dir for download content
+def make_static_tmp_dir():
+    try:
+        os.makedirs(static_tmp_path)
+    except OSError as exc:
+        if exc.errno == errno.EEXIST and os.path.isdir(static_tmp_path):
+            pass
+        else:
+            raise
+
 class LineBotApi():
+    def callback(self, body, signature):
+        try:
+            handler.handle(body, signature)
+        except LineBotApiError as e:
+            print("Got exception from LINE Messaging API: %s\n" % e.message)
+            for m in e.error.details:
+                print("  %s: %s" % (m.property, m.message))
+            print("\n")
+        except InvalidSignatureError:
+            abort(400)
+
+    @handler.add(MessageEvent, message=TextMessage)
     def handle_text_message(self, event):
         text = event.message.text
         if isinstance(event.source, SourceUser):
@@ -63,6 +89,7 @@ class LineBotApi():
         else:
             self.test_message(text, event)
 
+    @handler.add(MessageEvent, message=LocationMessage)
     def handle_location_message(self, event):
         line_bot_api.reply_message(
             event.reply_token,
@@ -71,10 +98,13 @@ class LineBotApi():
                 latitude=event.message.latitude, longitude=event.message.longitude
             )
         )
-    
+
+    @handler.add(MessageEvent, message=StickerMessage)
     def handle_sticker_message(self, event):
         self.ask_god_message('', event)
     
+    # Other Message Type
+    @handler.add(MessageEvent, message=(ImageMessage, VideoMessage, AudioMessage))
     def handle_content_message(self, event):
         if isinstance(event.message, ImageMessage):
             ext = 'jpg'
@@ -100,7 +130,8 @@ class LineBotApi():
                 TextSendMessage(text='Save content.'),
                 TextSendMessage(text=request.host_url + os.path.join('static', 'tmp', dist_name))
             ])
-    
+
+    @handler.add(MessageEvent, message=FileMessage)
     def handle_file_message(self, event):
         message_content = line_bot_api.get_message_content(event.message.id)
         with tempfile.NamedTemporaryFile(dir=static_tmp_path, prefix='file-', delete=False) as tf:
@@ -118,6 +149,27 @@ class LineBotApi():
                 TextSendMessage(text=request.host_url + os.path.join('static', 'tmp', dist_name))
             ])
 
+    @handler.add(FollowEvent)
+    def handle_follow(self, event):
+        print("Got Follow event:" + event.source.user_id)
+        # app.logger.info("Got Follow event:" + event.source.user_id)
+
+    @handler.add(UnfollowEvent)
+    def handle_unfollow(self, event):
+        print("Got Unfollow event:" + event.source.user_id)
+        # app.logger.info("Got Unfollow event:" + event.source.user_id)
+
+    @handler.add(JoinEvent)
+    def handle_join(self, event):
+        print('Joined this ' + event.source.type)
+        # app.logger.info('Joined this ' + event.source.type)
+
+    @handler.add(LeaveEvent)
+    def handle_leave(self, ):
+        print("Got leave event")
+        # app.logger.info("Got leave event")
+
+    @handler.add(PostbackEvent)
     def handle_postback(self, event):
         if event.postback.data == 'ping':
             self.reply_text_message('pong', event)
@@ -126,6 +178,21 @@ class LineBotApi():
         elif event.postback.data == 'date_postback':
             self.reply_text_message(event.postback.params['date'], event)
     
+    @handler.add(BeaconEvent)
+    def handle_beacon(self, event):
+        print('Got beacon event. hwid={}, device_message(hex string)={}'.format(event.beacon.hwid, event.beacon.dm))
+        # app.logger.info('Got beacon event. hwid={}, device_message(hex string)={}'.format(event.beacon.hwid, event.beacon.dm))
+
+    @handler.add(MemberJoinedEvent)
+    def handle_member_joined(self, event):
+        print('Got memberJoined event. event={}'.format(event))
+        # app.logger.info('Got memberJoined event. event={}'.format(event))
+
+    @handler.add(MemberLeftEvent)
+    def handle_member_left(self, event):
+        print("Got memberLeft event")
+        # app.logger.info("Got memberLeft event")
+
     def reply_text_message(self, replyText, event):
         line_bot_api.reply_message(
             event.reply_token,
