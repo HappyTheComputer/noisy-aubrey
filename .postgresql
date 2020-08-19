@@ -34,6 +34,7 @@ DELETE FROM tablename;
 
 # 教學
 https://docs.postgresql.tw
+https://www.fooish.com/sql/date.html
 
 last_login TIMESTAMP
 

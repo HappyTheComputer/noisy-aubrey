@@ -15,15 +15,10 @@
 from __future__ import unicode_literals
 
 import datetime
-import errno
-import json
 import os
 import sys
-import tempfile
 
-from argparse import ArgumentParser
-
-from flask import Flask, request, abort, send_from_directory
+from flask import Flask, request, send_from_directory
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__)
@@ -51,7 +46,7 @@ def send_static_content(path):
 
 @app.route('/')
 def homepage():
-    return 'Hello, World!'
+    return 'Hello, I\'m Aubrey!'
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))

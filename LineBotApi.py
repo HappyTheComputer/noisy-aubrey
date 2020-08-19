@@ -2,9 +2,10 @@ import os
 import sys
 import errno
 import tempfile
+from flask import abort
 
 from AskGod import random_ask
-from DataBaseApi import control_database
+from DataBaseApi import test_database, add_worker_database
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -69,10 +70,12 @@ def handle_text_message(event):
         if text.startswith('測試'):
             test_message(text, event)
         else:
-            ask_god_message(text, event)
+            godAnswer = random_ask(text)
+            check_reply_message_method(godAnswer, event)
     elif isinstance(event.source, SourceRoom) or isinstance(event.source, SourceGroup):
         if text.startswith('#神'):
-            ask_god_message(text, event)
+            godAnswer = random_ask(text)
+            check_reply_message_method(godAnswer, event)
         elif text.startswith('測試'):
             test_message(text, event)
 
@@ -205,22 +208,22 @@ def reply_buttons_message(tempDict, event):
         alt_text=tempDict['minText'], template=btn_template)
     line_bot_api.reply_message(event.reply_token, btn_message)
 
+def check_reply_message_method(msgDict, event):
+    if msgDict['type'] == 'Text':
+        reply_text_message(msgDict['text'], event)
+    elif msgDict['type'] == 'Sticker':
+        reply_sticker_message(msgDict['package'], msgDict['sticker'], event)
+    elif msgDict['type'] == 'Btn':
+        reply_buttons_message(msgDict, event)
+
 def test_message(text, event):
+    testDict = {'type': 'Text'}
     if text.find('資料庫') >= 0:
-        results = control_database('SELECT VERSION()')
-        replyText = "Database version :\n%s " % results
-        reply_text_message(replyText, event)
+        testDict['text'] = ask_database()
     elif isinstance(event.source, SourceUser) or isinstance(event.source, SourceGroup):
         profile = line_bot_api.get_profile(event.source.user_id)
-        reply_text_message('不要以為你是' + profile.display_name + '就了不起哦！', event)
+        testDict['text'] = '不要以為你是' + profile.display_name + '就了不起哦！'
+        add_worker_database(event.source.user_id)
     else:
-        reply_text_message("你是誰啊？媽媽說過不能跟陌生人說話，加好友再來戰。", event)
-
-def ask_god_message(text, event):
-    godAnswer = random_ask(text)
-    if godAnswer['type'] == 'Text':
-        reply_text_message(godAnswer['text'], event)
-    elif godAnswer['type'] == 'Sticker':
-        reply_sticker_message(godAnswer['package'], godAnswer['sticker'], event)
-    elif godAnswer['type'] == 'Btn':
-        reply_buttons_message(godAnswer, event)
+        testDict['text'] = "你是誰啊？媽媽說過不能跟陌生人說話，加好友再來戰。"
+    check_reply_message_method(testDict, event)
