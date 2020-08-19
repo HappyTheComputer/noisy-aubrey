@@ -218,6 +218,9 @@ def handle_member_left(event):
 def send_static_content(path):
     return send_from_directory('static', path)
 
+@app.route('/')
+def homepage():
+    return 'Hello, World!'
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
