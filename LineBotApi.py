@@ -73,7 +73,7 @@ def handle_text_message(event):
     elif isinstance(event.source, SourceRoom) or isinstance(event.source, SourceGroup):
         if text.startswith('#神'):
             ask_god_message(text, event)
-        else:
+        elif text.startswith('測試'):
             test_message(text, event)
 
 @handler.add(MessageEvent, message=LocationMessage)
