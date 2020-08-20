@@ -6,7 +6,49 @@
 # #某个日期星期几
 # anyday=datetime.datetime(2020,8,20).strftime("%w")
 # print(anyday)
+import random
+import requests as rq
+from bs4 import BeautifulSoup
+from fake_useragent import UserAgent
 
-from DownloadImg import search_image
-path = search_image('dog', 10)
-print(path)
+
+img_name = '柯基'
+ua = UserAgent().random
+url = 'https://www.google.com.tw/search?q='+img_name+'&tbm=isch&tbs=isz%3Am'
+response = rq.get(url, headers={ 'User-Agent': ua })
+soup = BeautifulSoup(response.text, 'lxml')
+# imageBoxs = soup.select("div.islrc div")
+# imageBoxs = soup.findAll("div", class_="islrc")
+imageBoxs = soup.find_all("div", class_="isv-r PNCib MSM1fd BUooTd")
+dataIDs = []
+for box in imageBoxs:
+    # print(box.prettify())
+    dataID = ''
+    try:
+        dataID = (box['data-id'])
+    except:
+        pass
+    finally:
+        if dataID != '':
+            dataIDs.append(dataID)
+bigImageUrl = url + '#imgrc=' + random.choice(dataIDs)
+print(bigImageUrl)
+imageUA = UserAgent().random
+imageR = rq.get(bigImageUrl, headers={ 'User-Agent': imageUA })
+imageSoup = BeautifulSoup(imageR.text, 'lxml')
+images = imageSoup.find_all("a")
+imageUrls = []
+for i in images:
+    print(i.prettify())
+    imageUrl = ''
+    try:
+        imageUrl = (i['href'])
+    except:
+        pass
+    finally:
+        if imageUrl != '' and imageUrl.find('/imgres?') >= 0 and imageUrl.find('https') >= 0:
+            start = imageUrl.find('/imgres?') + len('/imgres?')
+            end = imageUrl.find('&amp;')
+            print(imageUrl[start:end])
+            imageUrls.append(imageUrl[start:end])
+# print(imageSoup.prettify())
