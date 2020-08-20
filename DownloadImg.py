@@ -47,8 +47,9 @@ def search_image(searchKey, lim = 1):
             pass
         finally:
             if tmp_content != '' and tmp_content.find('http') >= 0 and tmp_content.find('/images') >= 0:
-                image_path = download_image(tmp_content, img_success_num)
-                img_file_arr.append(image_path)
+                img_file_arr.append(tmp_content)
+                # image_path = download_image(tmp_content, img_success_num)
+                # img_file_arr.append(image_path)
                 img_success_num += 1
 
     return img_file_arr
