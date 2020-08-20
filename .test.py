@@ -6,6 +6,6 @@
 # #某个日期星期几
 # anyday=datetime.datetime(2020,8,20).strftime("%w")
 # print(anyday)
-from DownloadImg import search_image
 
-search_image('chirs even', 5)
+from DownloadImg import search_image
+path = search_image('dog', 10)

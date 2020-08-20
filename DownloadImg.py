@@ -1,11 +1,11 @@
-import re
 import os
 import pathlib
-import base64
 import random
 import errno
 
-from requests_html import HTMLSession
+import requests as rq
+from bs4 import BeautifulSoup
+from fake_useragent import UserAgent
 
 static_tmp_path = os.path.join(os.path.dirname(__file__), 'static', 'tmp')
 
@@ -29,12 +29,12 @@ def check_image_finder():
 def search_image(searchKey, lim = 1):
     check_image_finder()
 
-    url = 'https://www.google.com.tw/search?q=' + searchKey + '&tbm=isch&tbs=isz%3Am'
+    url = 'https://www.google.com.tw/search?q=' + searchKey + '&tbm=isch'
+    ua = UserAgent().random
     # 開始搜尋跟下載
-    session = HTMLSession()
-    r = session.get(url)
-    r.html.render(sleep=3, scrolldown=1, wait=2)
-    img_arr = r.html.find("img")
+    response = rq.get(url, headers={ 'User-Agent': ua })
+    soup = BeautifulSoup(response.text, 'lxml')
+    img_arr = soup.find_all("img")
     img_success_num = 0
     img_file_arr = []
     for i in img_arr:
@@ -42,11 +42,11 @@ def search_image(searchKey, lim = 1):
             break
         tmp_content=''
         try:
-            tmp_content=(i.attrs['src'])
+            tmp_content=(i['data-src'])
         except:
             pass
         finally:
-            if tmp_content != '' and tmp_content.find('http') < 0 and tmp_content.find('/images') < 0:
+            if tmp_content != '' and tmp_content.find('http') >= 0 and tmp_content.find('/images') >= 0:
                 image_path = download_image(tmp_content, img_success_num)
                 img_file_arr.append(image_path)
                 img_success_num += 1
@@ -58,18 +58,10 @@ def search_image(searchKey, lim = 1):
     
 
 def download_image(content, index):
-    img_path = '%s/imgfile_%02d' %(static_tmp_path, index)
-    if content.find("jpeg")>-1:
-        img_path += '.jpg'
-    elif content.find("gif")>-1:
-        img_type += '.gif'
-    else:
-        img_type += '.png'
+    r = rq.get(content, stream=True)
+    img_path = '%s/imgfile_%02d.png' %(static_tmp_path, index)
     print(img_path)
     with open(img_path,'wb') as file:
-        base64_data = re.sub('^data:image/.+;base64,', '', content)
-        byte_data = base64.b64decode(base64_data)
-        file.write(byte_data)
-        file.flush()
+        file.write(r.content)
         file.close() 
     return img_path
