@@ -51,11 +51,7 @@ def search_image(searchKey, lim = 1):
                 img_file_arr.append(image_path)
                 img_success_num += 1
 
-    if len(img_file_arr) == 1:
-        return img_file_arr[0]
-    else:
-        return img_file_arr
-    
+    return img_file_arr
 
 def download_image(content, index):
     r = rq.get(content, stream=True)

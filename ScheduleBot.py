@@ -50,7 +50,7 @@ def greet_worker():
         '要放假啦！嗨起來！']
     greetWeekImg = ['Thomas Holland', 'Chris Evans', 'Ryan Reynolds', 'Thor Odinson', 'Robert Downey']
     today=int(time.strftime("%w"))-1
-    todayImgFileName = search_image(greetWeekImg[today])
+    todayImgFileName = search_image(greetWeekImg[today])[0]
     todayImgPath = request.url_root + os.path.join('static', 'tmp', todayImgFileName)
     greetDict = {
         '0':{

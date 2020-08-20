@@ -245,7 +245,7 @@ def test_message(text, event):
     elif text.find('招呼') >= 0:
         from DownloadImg import search_image
         testDict['0']['text'] = '你以為這麼簡單就可以測試成功嗎？'
-        imgFileName = search_image('狗')
+        imgFileName = search_image('狗')[0]
         testImgPath = request.url_root + os.path.join('static', 'tmp', imgFileName)
         print(testImgPath)
         testDict['1'] = {
