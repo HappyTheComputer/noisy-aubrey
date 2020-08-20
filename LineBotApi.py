@@ -1,7 +1,7 @@
 import os
 import sys
 import tempfile
-from flask import abort
+from flask import abort, request
 
 from AskGod import random_ask
 from DataBaseApi import test_database, add_worker_database, add_fight_field_database
@@ -245,9 +245,10 @@ def test_message(text, event):
     elif text.find('招呼') >= 0:
         from DownloadImg import search_image
         testDict['0']['text'] = '你以為這麼簡單就可以測試成功嗎？'
+        testImgPath = request.url_root + '/static/tmp' + search_image('狗')
         testDict['1'] = {
             'type':'Image',
-            'img':search_image('狗')
+            'img':testImgPath
         }
     elif isinstance(event.source, SourceUser):
         profile = line_bot_api.get_profile(event.source.user_id)

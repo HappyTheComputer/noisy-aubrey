@@ -1,4 +1,5 @@
 import time
+from flask import request
 from LineBotApi import check_push_message_method
 from DataBaseApi import select_table
 from DownloadImg import search_image
@@ -49,6 +50,7 @@ def greet_worker():
         '要放假啦！嗨起來！']
     greetWeekImg = ['Thomas Holland', 'Chris Evans', 'Ryan Reynolds', 'Thor Odinson', 'Robert Downey']
     today=int(time.strftime("%w"))-1
+    todayImgPath = request.url_root + '/static/tmp' + search_image(greetWeekImg[today])
     greetDict = {
         '0':{
             'type':'Text',
@@ -56,7 +58,7 @@ def greet_worker():
         },
         '1':{
             'type':'Image',
-            'img':search_image(greetWeekImg[today])
+            'img':todayImgPath
         }
     }
     workers = select_table('workers', 'worker_id')

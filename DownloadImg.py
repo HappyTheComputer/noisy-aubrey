@@ -59,7 +59,7 @@ def search_image(searchKey, lim = 1):
 
 def download_image(content, index):
     r = rq.get(content, stream=True)
-    img_path = '%s/imgfile_%02d.png' %(static_tmp_path, index)
+    img_path = 'imgfile_%02d.png' %(index)
     print(img_path)
     with open(img_path,'wb') as file:
         file.write(r.content)
