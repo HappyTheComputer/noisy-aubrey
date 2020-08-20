@@ -3,3 +3,4 @@ Pipfile
 .test
 .postgresql
 .env
+static/
