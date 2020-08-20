@@ -2,3 +2,4 @@ Pipfile
 .app_bak
 .test
 .postgresql
+.env

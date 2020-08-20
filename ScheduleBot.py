@@ -9,7 +9,7 @@ def good_morning():
         },
         '1':{
             'type':'Image',
-            'img':'https://i.pinimg.com/originals/15/d6/06/15d606d56054969594bb4cf8e6d32bd9/200'
+            'img':'https://i.pinimg.com/originals/15/d6/06/15d606d56054969594bb4cf8e6d32bd9.jpg'
         }
     }
 
@@ -27,3 +27,4 @@ def good_morning():
     #         push_text_message(pushTo, '上班囉！各位社畜們～')
 
 good_morning()
+

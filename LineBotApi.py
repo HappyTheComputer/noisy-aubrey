@@ -219,25 +219,39 @@ def check_push_message_method(msgDict, pushTo):
         pushTo, pushArr
     )
 
-def check_reply_message_method(msgDict, event):
-    if msgDict['type'] == 'Text':
-        reply_text_message(msgDict['text'], event)
-    elif msgDict['type'] == 'Sticker':
-        reply_sticker_message(msgDict['package'], msgDict['sticker'], event)
-    elif msgDict['type'] == 'Btn':
-        reply_buttons_message(msgDict, event)
+def check_reply_message_method(msgDict, replyTo):
+    replyArr = []
+    for var in msgDict.values():
+        if var['type'] == 'Text':
+            replyArr.append(TextSendMessage(text=var['text']))
+        elif var['type'] == 'Sticker':
+            replyArr.append(StickerSendMessage(package_id=package, sticker_id=sticker))
+        elif var['type'] == 'Btn':
+            btn_template = ButtonsTemplate(
+            title=var['title'], 
+            text=var['fullText'], 
+            actions=[
+                URIAction(label=var['btnText'], uri=var['url'])
+            ])
+            replyArr.append(TemplateSendMessage(
+                alt_text=tempDict['minText'], template=btn_template))
+    line_bot_api.reply_message(replyTo, replyArr)
 
 def test_message(text, event):
-    testDict = {'type': 'Text'}
+    testDict = {
+        '0':{
+            'type': 'Text',
+        }
+    }
     if text.find('資料庫') >= 0:
-        testDict['text'] = ask_database()
+        testDict['0']['text'] = ask_database()
     elif isinstance(event.source, SourceUser):
         profile = line_bot_api.get_profile(event.source.user_id)
-        testDict['text'] = '不要以為你是' + profile.display_name + '就了不起哦！'
+        testDict['0']['text'] = '不要以為你是' + profile.display_name + '就了不起哦！'
         add_worker_database(event.source.user_id)
     elif isinstance(event.source, SourceGroup):
-        testDict['text'] = '各位下班了嗎～'
+        testDict['0']['text'] = '各位下班了嗎～'
         add_fight_field_database(event.source.group_id)
     else:
-        testDict['text'] = "你是誰啊？媽媽說過不能跟陌生人說話，加好友再來戰。"
-    check_reply_message_method(testDict, event)
+        testDict['0']['text'] = "你是誰啊？媽媽說過不能跟陌生人說話，加好友再來戰。"
+    check_reply_message_method(testDict, event.reply_token)
