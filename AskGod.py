@@ -31,7 +31,7 @@ def pick_sixty_years_chance(index):
     # detail = soup.find_all("div", class_="fs_box fs_left")
     # for d in detail:
     #     print(d.text)
-    print(chanceDict)
+    # print(chanceDict)
     return chanceDict
 
 GameKeyWords = {
@@ -70,8 +70,13 @@ def random_ask(askText):
                 godAnswer['0']['title'] = ''.join(chance['poems'][0:3])
                 godAnswer['0']['fullText'] = chance['poems'][3]
                 godAnswer['0']['minText'] = ''.join(chance['poems'][0:2])
-                godAnswer['0']['btnText'] = '解籤'
-                godAnswer['0']['url'] = chance['url']
+                godAnswer['0']['btns'] = {
+                    '0':{
+                        'type':'url',
+                        'label':'解籤',
+                        'content':chance['url']
+                    }
+                }
                 break
 
     if not godAnswer['0']['type']:

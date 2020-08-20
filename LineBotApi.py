@@ -161,12 +161,26 @@ def handle_leave():
 
 @handler.add(PostbackEvent)
 def handle_postback(event):
-    if event.postback.data == 'ping':
-        reply_text_message('pong', event)
-    elif event.postback.data == 'datetime_postback':
-        reply_text_message(event.postback.params['datetime'], event)
-    elif event.postback.data == 'date_postback':
-        reply_text_message(event.postback.params['date'], event)
+    # 使用者使用postback回送的參數會在這邊接收
+    print('postback', event.postback)
+    if event.postback.data == '測試':
+        testDict = {
+            '0':{
+                'type':'Text',
+                'text':'測試回撥！'
+            }
+        }
+        check_reply_message_method(testDict, event.reply_token)
+    elif event.postback.data == 'deadline':
+        dateDict = {
+            '0':{ 'type':'Text' }
+        }
+        timeType = ['date', 'time', 'datetime']
+        for t in timeType:
+            if t in event.postback.params:
+                dateDict['0']['text'] = event.postback.params[t]
+                break
+        check_reply_message_method(dateDict, event.reply_token)
 
 @handler.add(BeaconEvent)
 def handle_beacon(event):
@@ -183,31 +197,6 @@ def handle_member_left(event):
     print("Got memberLeft event")
     # app.logger.info("Got memberLeft event")
 
-def reply_text_message(replyText, event):
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=replyText))
-
-def reply_sticker_message(package, sticker, event):
-    line_bot_api.reply_message(
-        event.reply_token,
-        StickerSendMessage(
-            package_id=package,
-            sticker_id=sticker
-            )
-        )
-
-def reply_buttons_message(tempDict, event):
-    btn_template = ButtonsTemplate(
-            title=tempDict['title'], 
-            text=tempDict['fullText'], 
-            actions=[
-                URIAction(label=tempDict['btnText'], uri=tempDict['url'])
-            ])
-    btn_message = TemplateSendMessage(
-        alt_text=tempDict['minText'], template=btn_template)
-    line_bot_api.reply_message(event.reply_token, btn_message)
-
 def check_push_message_method(msgDict, pushTo):
     pushArr = []
     for var in msgDict.values():
@@ -215,6 +204,13 @@ def check_push_message_method(msgDict, pushTo):
             pushArr.append(TextSendMessage(text=var['text']))
         elif var['type'] == 'Image':
             pushArr.append(ImageSendMessage(var['img'], var['img']))
+        elif var['type'] == 'Btn':
+            btn_template = ButtonsTemplate(
+            title=var['title'], 
+            text=var['fullText'], 
+            actions=get_button_template_message(var['btns']))
+            pushArr.append(TemplateSendMessage(
+                alt_text=var['minText'], template=btn_template))
     line_bot_api.push_message(
         pushTo, pushArr
     )
@@ -227,19 +223,25 @@ def check_reply_message_method(msgDict, replyTo):
         elif var['type'] == 'Sticker':
             replyArr.append(StickerSendMessage(package_id=package, sticker_id=sticker))
         elif var['type'] == 'Btn':
-            print(var)
-            btnArr = []
-            if var['url'].startswith('http'):
-                btnArr.append(URIAction(label=var['btnText'], uri=var['url']))
-            else:
-                btnArr.append(MessageAction(label=var['btnText'], text=var['url']))
+            # print(var)
             btn_template = ButtonsTemplate(
             title=var['title'], 
             text=var['fullText'], 
-            actions=btnArr)
+            actions=get_button_template_message(var['btns']))
             replyArr.append(TemplateSendMessage(
                 alt_text=var['minText'], template=btn_template))
     line_bot_api.reply_message(replyTo, replyArr)
+
+def get_button_template_message(actionsDict):
+    actionArr = []
+    for a in actionsDict.values():
+        if a['type'] == 'url':
+            actionArr.append(URIAction(label=a['label'], uri=a['content']))
+        elif a['type'] == 'date' or a['type'] == 'time' or a['type'] == 'datetime':
+            actionArr.append(DatetimePickerAction(label=a['label'], data=a['postback'], mode=a['type']))
+        else:
+            actionArr.append(MessageAction(label=a['label'], text=a['content']))
+    return actionArr
 
 def test_message(text, event):
     testDict = {
@@ -248,7 +250,7 @@ def test_message(text, event):
         }
     }
     if text.find('資料庫') >= 0:
-        testDict['0']['text'] = ask_database()
+        testDict['0']['text'] = test_database()
     elif isinstance(event.source, SourceUser):
         profile = line_bot_api.get_profile(event.source.user_id)
         testDict['0']['text'] = '不要以為你是' + profile.display_name + '就了不起哦！'
