@@ -65,11 +65,15 @@ def random_ask(askText):
             elif key == '籤':
                 godAnswer['0']['type'] = 'Text'
                 godAnswer['0']['text'] = '是否是此籤？'
-                godAnswer['1']['type'] = 'Text'
-                godAnswer['1']['text'] = random.choice(GameKeyWords['杯'])
-
+                godAnswer['1'] = {
+                    'type':'Text',
+                    'text':random.choice(GameKeyWords['杯'])
+                }
+                # 詩籤本體
+                godAnswer['2'] = {
+                    'type':'Btn',
+                }
                 pickId = random.randint(1, GameKeyWords[key]['六十甲子籤'])
-                godAnswer['2']['type'] = 'Btn'
                 chance = pick_sixty_years_chance(pickId)
                 godAnswer['2']['title'] = ''.join(chance['poems'][0:3])
                 godAnswer['2']['fullText'] = chance['poems'][3]
