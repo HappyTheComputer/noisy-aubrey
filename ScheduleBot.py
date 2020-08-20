@@ -50,23 +50,24 @@ def greet_worker():
         '要放假啦！嗨起來！']
     greetWeekImg = ['Thomas Holland', 'Chris Evans', 'Ryan Reynolds', 'Thor Odinson', 'Robert Downey']
     today=int(time.strftime("%w"))-1
-    todayImgFileName = search_image(greetWeekImg[today])[0]
-    # todayImgPath = request.url_root + os.path.join('static', 'tmp', todayImgFileName)
-    greetDict = {
-        '0':{
-            'type':'Text',
-            'text':greetWeekText[today]
-        },
-        '1':{
-            'type':'Image',
-            'img':todayImgFileName
+    if today >= 0 and today < 5:
+        todayImgFileName = search_image(greetWeekImg[today])[0]
+        # todayImgPath = request.url_root + os.path.join('static', 'tmp', todayImgFileName)
+        greetDict = {
+            '0':{
+                'type':'Text',
+                'text':greetWeekText[today]
+            },
+            '1':{
+                'type':'Image',
+                'img':todayImgFileName
+            }
         }
-    }
-    workers = select_table('workers', 'worker_id')
-    for w in workers:
-        pushTo = w[0]
-        if len(pushTo) > 0:
-            check_push_message_method(greetDict, pushTo)
+        workers = select_table('workers', 'worker_id')
+        for w in workers:
+            pushTo = w[0]
+            if len(pushTo) > 0:
+                check_push_message_method(greetDict, pushTo)
 
 greet_worker()
 

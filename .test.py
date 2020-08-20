@@ -9,3 +9,4 @@
 
 from DownloadImg import search_image
 path = search_image('dog', 10)
+print(path)

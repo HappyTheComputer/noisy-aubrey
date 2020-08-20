@@ -27,7 +27,7 @@ def check_image_finder():
         os.remove(os.path.join(static_tmp_path, f))
 
 def search_image(searchKey, lim = 1):
-    check_image_finder()
+    # check_image_finder()
 
     url = 'https://www.google.com.tw/search?q=' + searchKey + '&tbm=isch'
     ua = UserAgent().random
