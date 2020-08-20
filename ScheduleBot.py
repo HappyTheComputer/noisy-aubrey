@@ -51,7 +51,7 @@ def greet_worker():
     greetWeekImg = ['Thomas Holland', 'Chris Evans', 'Ryan Reynolds', 'Thor Odinson', 'Robert Downey']
     today=int(time.strftime("%w"))-1
     todayImgFileName = search_image(greetWeekImg[today])[0]
-    todayImgPath = request.url_root + os.path.join('static', 'tmp', todayImgFileName)
+    # todayImgPath = request.url_root + os.path.join('static', 'tmp', todayImgFileName)
     greetDict = {
         '0':{
             'type':'Text',
@@ -59,7 +59,7 @@ def greet_worker():
         },
         '1':{
             'type':'Image',
-            'img':todayImgPath
+            'img':todayImgFileName
         }
     }
     workers = select_table('workers', 'worker_id')

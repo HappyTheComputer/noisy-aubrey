@@ -246,11 +246,9 @@ def test_message(text, event):
         from DownloadImg import search_image
         testDict['0']['text'] = '你以為這麼簡單就可以測試成功嗎？'
         imgFileName = search_image('狗')[0]
-        testImgPath = request.url_root + os.path.join('static', 'tmp', imgFileName)
-        print(testImgPath)
         testDict['1'] = {
             'type':'Image',
-            'img':testImgPath
+            'img':imgFileName
         }
     elif isinstance(event.source, SourceUser):
         profile = line_bot_api.get_profile(event.source.user_id)
