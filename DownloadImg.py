@@ -1,6 +1,5 @@
 import os
 import pathlib
-import random
 import errno
 
 import requests as rq

@@ -1,4 +1,5 @@
 import time
+import random
 from flask import request
 from LineBotApi import check_push_message_method
 from DataBaseApi import select_table
@@ -33,13 +34,6 @@ def good_morning():
         pushTo = w[0]
         if len(pushTo) > 0:
             check_push_message_method(testDict, pushTo)
-    # fields = select_table('fightField', 'group_id')
-    # image = 'https://placekeanu.com/200/150'
-    # for f in fields:
-    #     pushTo = f[0]
-    #     if len(pushTo) > 0:
-    #         push_image_message(pushTo, image)
-    #         push_text_message(pushTo, '上班囉！各位社畜們～')
 
 def greet_worker():
     greetWeekText = [
@@ -51,8 +45,8 @@ def greet_worker():
     greetWeekImg = ['Thomas Holland', 'Chris Evans', 'Ryan Reynolds', 'Thor Odinson', 'Robert Downey']
     today=int(time.strftime("%w"))-1
     if today >= 0 and today < 5:
-        todayImgFileName = search_image(greetWeekImg[today])[0]
-        # todayImgPath = request.url_root + os.path.join('static', 'tmp', todayImgFileName)
+        todayImages = search_image(greetWeekImg[today], 100)
+        todayImgFileName = random.choice(todayImages)
         greetDict = {
             '0':{
                 'type':'Text',
@@ -63,9 +57,9 @@ def greet_worker():
                 'img':todayImgFileName
             }
         }
-        workers = select_table('workers', 'worker_id')
-        for w in workers:
-            pushTo = w[0]
+        fields = select_table('fightField', 'group_id')
+        for f in fields:
+            pushTo = f[0]
             if len(pushTo) > 0:
                 check_push_message_method(greetDict, pushTo)
 
