@@ -50,34 +50,45 @@ GameKeyWords = {
 
 def random_ask(askText):
     godAnswer = {
-        'type':'',
+        '0':{
+            'type':'',
+        }
     }
 
     for key in GameKeyWords.keys():
         if askText.find(key) >= 0:
             # 亂數回字串
             if type(GameKeyWords[key]) == list:
-                godAnswer['type'] = 'Text'
-                godAnswer['text'] = random.choice(GameKeyWords[key])
+                godAnswer['0']['type'] = 'Text'
+                godAnswer['0']['text'] = random.choice(GameKeyWords[key])
                 break
             elif key == '籤':
+                godAnswer['0']['type'] = 'Text'
+                godAnswer['0']['text'] = '是否是此籤？'
+                godAnswer['1']['type'] = 'Text'
+                godAnswer['1']['text'] = random.choice(GameKeyWords['杯'])
+
                 pickId = random.randint(1, GameKeyWords[key]['六十甲子籤'])
-                godAnswer['type'] = 'Btn'
+                godAnswer['2']['type'] = 'Btn'
                 chance = pick_sixty_years_chance(pickId)
-                godAnswer['title'] = ''.join(chance['poems'][0:3])
-                godAnswer['fullText'] = chance['poems'][3]
-                godAnswer['minText'] = ''.join(chance['poems'][0:2])
-                godAnswer['btnText'] = '解籤'
-                godAnswer['url'] = chance['url']
+                godAnswer['2']['title'] = ''.join(chance['poems'][0:3])
+                godAnswer['2']['fullText'] = chance['poems'][3]
+                godAnswer['2']['minText'] = ''.join(chance['poems'][0:2])
+                if godAnswer['1']['text'].find('聖杯') >= 0:
+                    godAnswer['2']['btnText'] = '解籤'
+                    godAnswer['2']['url'] = chance['url']
+                else:
+                    godAnswer['2']['btnText'] = '重抽'
+                    godAnswer['2']['url'] = '重抽一籤'
                 break
 
-    if not godAnswer['type']:
+    if not godAnswer['0']['type']:
         # 沒有搜到關鍵字都回貼圖
-        godAnswer['type'] = 'Sticker'
+        godAnswer['0']['type'] = 'Sticker'
         package = random.choice(GameKeyWords['anyothermessage']['list'])
         sticker = random.randint(GameKeyWords['anyothermessage'][str(package)][0], GameKeyWords['anyothermessage'][str(package)][1])
-        godAnswer['package'] = package
-        godAnswer['sticker'] = sticker
+        godAnswer['0']['package'] = package
+        godAnswer['0']['sticker'] = sticker
     return godAnswer
 
 

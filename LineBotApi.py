@@ -227,12 +227,15 @@ def check_reply_message_method(msgDict, replyTo):
         elif var['type'] == 'Sticker':
             replyArr.append(StickerSendMessage(package_id=package, sticker_id=sticker))
         elif var['type'] == 'Btn':
+            btnArr = []
+            if var['url'].startswith('http'):
+                btnArr.append(URIAction(label=var['btnText'], uri=var['url']))
+            else:
+                btnArr.append(MessageAction(label=var['btnText'], text=var['url']))
             btn_template = ButtonsTemplate(
             title=var['title'], 
             text=var['fullText'], 
-            actions=[
-                URIAction(label=var['btnText'], uri=var['url'])
-            ])
+            actions=btnArr)
             replyArr.append(TemplateSendMessage(
                 alt_text=tempDict['minText'], template=btn_template))
     line_bot_api.reply_message(replyTo, replyArr)
