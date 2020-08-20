@@ -1,5 +1,7 @@
+import time
 from LineBotApi import check_push_message_method
 from DataBaseApi import select_table
+from DownloadImg import search_image
 
 def good_morning():
     testDict = {
@@ -19,13 +21,12 @@ def good_morning():
             'btns':{
                 '0':{
                     'type':'date',
-                    'label':'按鈕1',
-                    'postback':'回撥！'
+                    'label':'回撥測試',
+                    'postback':'deadline'
                 }
             }
         }
     }
-
     workers = select_table('workers', 'worker_id')
     for w in workers:
         pushTo = w[0]
@@ -39,6 +40,30 @@ def good_morning():
     #         push_image_message(pushTo, image)
     #         push_text_message(pushTo, '上班囉！各位社畜們～')
 
-good_morning()
+def greet_worker():
+    greetWeekText = [
+        '各位社畜加油吧，週一來一寶～', 
+        '週二難熬啊，甜心隊長給你加油！', 
+        '這週過半啦，週三啊各位！', 
+        '今天是雷神之日。', 
+        '要放假啦！嗨起來！']
+    greetWeekImg = ['Thomas Holland', 'Chris Evans', 'Ryan Reynolds', 'Thor Odinson', 'Robert Downey']
+    today=int(time.strftime("%w"))-1
+    greetDict = {
+        '0':{
+            'type':'Text',
+            'text':greetWeekText[today]
+        },
+        '1':{
+            'type':'Image',
+            'img':search_image(greetWeekImg[today])
+        }
+    }
+    workers = select_table('workers', 'worker_id')
+    for w in workers:
+        pushTo = w[0]
+        if len(pushTo) > 0:
+            check_push_message_method(greetDict, pushTo)
 
+greet_worker()
 

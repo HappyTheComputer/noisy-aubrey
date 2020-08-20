@@ -25,6 +25,7 @@ app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_host=1, x_proto=1)
 
 from LineBotApi import linebotcallback
+from DownloadImg import make_static_tmp_dir
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -49,5 +50,7 @@ def homepage():
     return 'Hello, I\'m Aubrey!'
 
 if __name__ == "__main__":
+    make_static_tmp_dir()
+
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
