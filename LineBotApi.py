@@ -209,6 +209,8 @@ def check_reply_message_method(msgDict, replyTo):
     for var in msgDict.values():
         if var['type'] == 'Text':
             replyArr.append(TextSendMessage(text=var['text']))
+        elif var['type'] == 'Image':
+            replyArr.append(ImageSendMessage(var['img'], var['img']))
         elif var['type'] == 'Sticker':
             replyArr.append(StickerSendMessage(package_id=var['package'], sticker_id=var['sticker']))
         elif var['type'] == 'Btn':
@@ -240,6 +242,13 @@ def test_message(text, event):
     }
     if text.find('資料庫') >= 0:
         testDict['0']['text'] = test_database()
+    elif text.find('招呼') >= 0:
+        from DownloadImg import search_image
+        testDict['0']['text'] = '你以為這麼簡單就可以測試成功嗎？'
+        testDict['1'] = {
+            'type':'Image',
+            'img':search_image('狗')
+        }
     elif isinstance(event.source, SourceUser):
         profile = line_bot_api.get_profile(event.source.user_id)
         testDict['0']['text'] = '不要以為你是' + profile.display_name + '就了不起哦！'
