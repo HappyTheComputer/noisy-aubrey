@@ -210,7 +210,7 @@ def check_reply_message_method(msgDict, replyTo):
         if var['type'] == 'Text':
             replyArr.append(TextSendMessage(text=var['text']))
         elif var['type'] == 'Sticker':
-            replyArr.append(StickerSendMessage(package_id=package, sticker_id=sticker))
+            replyArr.append(StickerSendMessage(package_id=var['package'], sticker_id=var['sticker']))
         elif var['type'] == 'Btn':
             # print(var)
             btn_template = ButtonsTemplate(
