@@ -237,7 +237,7 @@ def check_reply_message_method(msgDict, replyTo):
             text=var['fullText'], 
             actions=btnArr)
             replyArr.append(TemplateSendMessage(
-                alt_text=tempDict['minText'], template=btn_template))
+                alt_text=var['minText'], template=btn_template))
     line_bot_api.reply_message(replyTo, replyArr)
 
 def test_message(text, event):
