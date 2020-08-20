@@ -3,6 +3,7 @@ import os
 import pathlib
 import base64
 import random
+import errno
 
 from requests_html import HTMLSession
 
