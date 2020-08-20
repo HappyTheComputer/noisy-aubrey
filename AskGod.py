@@ -63,27 +63,15 @@ def random_ask(askText):
                 godAnswer['0']['text'] = random.choice(GameKeyWords[key])
                 break
             elif key == '籤':
-                godAnswer['0']['type'] = 'Text'
-                godAnswer['0']['text'] = '是否是此籤？'
-                godAnswer['1'] = {
-                    'type':'Text',
-                    'text':random.choice(GameKeyWords['杯'])
-                }
                 # 詩籤本體
-                godAnswer['2'] = {
-                    'type':'Btn',
-                }
+                godAnswer['0']['type'] = 'Btn'
                 pickId = random.randint(1, GameKeyWords[key]['六十甲子籤'])
                 chance = pick_sixty_years_chance(pickId)
-                godAnswer['2']['title'] = ''.join(chance['poems'][0:3])
-                godAnswer['2']['fullText'] = chance['poems'][3]
-                godAnswer['2']['minText'] = ''.join(chance['poems'][0:2])
-                if godAnswer['1']['text'].find('聖杯') >= 0:
-                    godAnswer['2']['btnText'] = '解籤'
-                    godAnswer['2']['url'] = chance['url']
-                else:
-                    godAnswer['2']['btnText'] = '重抽'
-                    godAnswer['2']['url'] = '重抽一籤'
+                godAnswer['0']['title'] = ''.join(chance['poems'][0:3])
+                godAnswer['0']['fullText'] = chance['poems'][3]
+                godAnswer['0']['minText'] = ''.join(chance['poems'][0:2])
+                godAnswer['0']['btnText'] = '解籤'
+                godAnswer['0']['url'] = chance['url']
                 break
 
     if not godAnswer['0']['type']:
