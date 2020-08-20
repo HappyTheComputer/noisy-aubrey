@@ -183,21 +183,7 @@ def handle_member_left(event):
     print("Got memberLeft event")
     # app.logger.info("Got memberLeft event")
 
-def reply_text_message(replyText, event):
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=replyText))
-
-def reply_sticker_message(package, sticker, event):
-    line_bot_api.reply_message(
-        event.reply_token,
-        StickerSendMessage(
-            package_id=package,
-            sticker_id=sticker
-            )
-        )
-
-def reply_buttons_message(tempDict, event):
+def reply_buttons_message(tempDict, replyTo):
     btn_template = ButtonsTemplate(
             title=tempDict['title'], 
             text=tempDict['fullText'], 
@@ -206,7 +192,7 @@ def reply_buttons_message(tempDict, event):
             ])
     btn_message = TemplateSendMessage(
         alt_text=tempDict['minText'], template=btn_template)
-    line_bot_api.reply_message(event.reply_token, btn_message)
+    line_bot_api.reply_message(replyTo, btn_message)
 
 def check_push_message_method(msgDict, pushTo):
     pushArr = []
@@ -222,22 +208,12 @@ def check_push_message_method(msgDict, pushTo):
 def check_reply_message_method(msgDict, replyTo):
     replyArr = []
     for var in msgDict.values():
-        if var['type'] == 'Text':
+        if var['type'] == 'Btn':
+            reply_buttons_message(var, replyTo)
+        elif var['type'] == 'Text':
             replyArr.append(TextSendMessage(text=var['text']))
         elif var['type'] == 'Sticker':
             replyArr.append(StickerSendMessage(package_id=package, sticker_id=sticker))
-        elif var['type'] == 'Btn':
-            btnArr = []
-            if var['url'].startswith('http'):
-                btnArr.append(URIAction(label=var['btnText'], uri=var['url']))
-            else:
-                btnArr.append(MessageAction(label=var['btnText'], text=var['url']))
-            btn_template = ButtonsTemplate(
-            title=var['title'], 
-            text=var['fullText'], 
-            actions=btnArr)
-            replyArr.append(TemplateSendMessage(
-                alt_text=var['minText'], template=btn_template))
     line_bot_api.reply_message(replyTo, replyArr)
 
 def test_message(text, event):
