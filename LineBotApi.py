@@ -208,18 +208,15 @@ def reply_buttons_message(tempDict, event):
         alt_text=tempDict['minText'], template=btn_template)
     line_bot_api.reply_message(event.reply_token, btn_message)
 
-def push_text_message(pushTo, pushText):
+def check_push_message_method(msgDict, pushTo):
+    pushArr = []
+    for var in msgDict.values():
+        if var['type'] == 'Text':
+            pushArr.append(TextSendMessage(text=var['text']))
+        elif var['type'] == 'Image':
+            pushArr.append(ImageSendMessage(var['img'], var['img']))
     line_bot_api.push_message(
-        pushTo, [
-            TextSendMessage(text=pushText),
-        ]
-    )
-
-def push_image_message(pushTo, pushImageUrl):
-    line_bot_api.push_message(
-        pushTo, [
-            ImageSendMessage(pushImageUrl, pushImageUrl),
-        ]
+        pushTo, pushArr
     )
 
 def check_reply_message_method(msgDict, event):
