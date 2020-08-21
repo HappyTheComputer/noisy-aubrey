@@ -197,7 +197,7 @@ def get_button_template_message(actionsDict):
         else:
             actionArr.append(MessageAction(label=a['label'], text=a['content']))
     return actionArr
-
+    
 def test_message(text, event):
     testDict = {
         '0':{

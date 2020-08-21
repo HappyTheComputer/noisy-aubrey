@@ -5,36 +5,6 @@ from LineBotApi import check_push_message_method
 from DataBaseApi import select_table
 from DownloadImg import search_image
 
-def good_morning():
-    testDict = {
-        '0':{
-            'type':'Text',
-            'text':'認命吧上班囉～'
-        },
-        '1':{
-            'type':'Image',
-            'img':'https://i.pinimg.com/originals/15/d6/06/15d606d56054969594bb4cf8e6d32bd9.jpg'
-        },
-        '2':{
-            'type':'Btn',
-            'title':'測試標題',
-            'fullText':'內文內文內文內文\n內文內文內文內文',
-            'minText':'縮圖',
-            'btns':{
-                '0':{
-                    'type':'date',
-                    'label':'回撥測試',
-                    'postback':'deadline'
-                }
-            }
-        }
-    }
-    workers = select_table('workers', 'worker_id')
-    for w in workers:
-        pushTo = w[0]
-        if len(pushTo) > 0:
-            check_push_message_method(testDict, pushTo)
-
 def greet_worker():
     greetWeekText = [
         '各位社畜加油吧，週一來一寶～', 
