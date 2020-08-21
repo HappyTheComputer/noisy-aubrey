@@ -107,18 +107,6 @@ def test_database():
     results = control_database_with_response('SELECT VERSION()')
     return "Database version :\n%s " % results
 
-def add_worker_database(user_id):
-    tableName = 'workers'
-    types = {
-        "worker_id": "VARCHAR(50) NOT NULL",
-        "deadline": "date"
-    }
-    create_table(tableName, types)
-    if not check_value_exists(tableName, 'worker_id', user_id):
-        todayStr = get_current_date_str()
-        insert_value(tableName, [user_id, todayStr])
-    # print(select_table(tableName))
-
 def add_fight_field_database(group_id):
     tableName = 'fightField'
     types = {

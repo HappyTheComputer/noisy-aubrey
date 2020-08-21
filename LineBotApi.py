@@ -4,7 +4,7 @@ import tempfile
 from flask import abort, request
 
 from AskGod import random_ask
-from DataBaseApi import test_database, add_worker_database, add_fight_field_database
+from DataBaseApi import test_database
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -208,7 +208,7 @@ def test_message(text, event):
     elif text.find('招呼') >= 0:
         from DownloadImg import search_image
         testDict['0']['text'] = '你以為這麼簡單就可以測試成功嗎？'
-        imgFileName = search_image('狗')[0]
+        imgFileName = search_image('貓')[0]
         testDict['1'] = {
             'type':'Image',
             'img':imgFileName
@@ -216,10 +216,8 @@ def test_message(text, event):
     elif isinstance(event.source, SourceUser):
         profile = line_bot_api.get_profile(event.source.user_id)
         testDict['0']['text'] = '不要以為你是' + profile.display_name + '就了不起哦！'
-        add_worker_database(event.source.user_id)
     elif isinstance(event.source, SourceGroup):
         testDict['0']['text'] = '各位下班了嗎～'
-        add_fight_field_database(event.source.group_id)
     else:
         testDict['0']['text'] = "你是誰啊？媽媽說過不能跟陌生人說話，加好友再來戰。"
     check_reply_message_method(testDict, event.reply_token)
