@@ -1,2 +1,2 @@
-# 吵鬧阿比[noisy-aubrey]
+# 吵鬧阿比(Noisy Aubrey)
 LineBot with Python deploy on Heroku
