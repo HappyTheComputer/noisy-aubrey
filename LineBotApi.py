@@ -2,7 +2,6 @@ import os
 import sys
 import tempfile
 from flask import abort, request
-
 from AskGod import random_ask
 from DataBaseApi import test_database
 
@@ -94,6 +93,7 @@ def handle_file_message(event):
 
 @handler.add(FollowEvent)
 def handle_follow(event):
+    say_hello_message(event)
     print("Got Follow event:" + event.source.user_id)
     # app.logger.info("Got Follow event:" + event.source.user_id)
 
@@ -222,3 +222,24 @@ def test_message(text, event):
     else:
         testDict['0']['text'] = "你是誰啊？媽媽說過不能跟陌生人說話，加好友再來戰。"
     check_reply_message_method(testDict, event.reply_token)
+
+def say_hello_message(event):
+    helloDict = {
+        '0': {
+            'type':'Text',
+            'text':'你要想清楚，成為我好友也不會對你比較好哦！\n我這個人很簡單，現在就讓我們先把話說清楚。'
+        },
+        '1': {
+            'type':'Text',
+            'text':'只有你跟我的時候，我一定不會冷落你這是我的原則，不信你可以試試。用擲『杯』或『吉凶』我會幫你占卜，説『籤』的話我會幫你抽一支六十甲子籤。'
+        },
+        '2': {
+            'type':'Text',
+            'text':'但是我在其他人面前會緊張（社恐），在群組裡要找我幫忙要先講『#神』。'
+        },
+        '3': {
+            'type':'Text',
+            'text':'就這樣，那麼現在你想跟我聊什麼呢？'
+        }
+    }
+    check_reply_message_method(helloDict, event.reply_token)
