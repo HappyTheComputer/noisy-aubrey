@@ -1,8 +1,8 @@
 Pipfile
 
 .app_bak.py
-.test.py
 .postgresql
 .env
 
 static/
+test/
