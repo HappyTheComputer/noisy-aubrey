@@ -4,5 +4,5 @@ requests
 lxml
 flask
 fake_useragent
-execjs
+PyExecJS
 psycopg2
