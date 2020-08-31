@@ -1,6 +1,8 @@
 import random
+import execjs
 import requests as rq
 from bs4 import BeautifulSoup
+from fake_useragent import UserAgent
 
 GodNameKeys = ['六十甲子籤', '觀音一百籤', '雷雨師一百籤', '保生大帝六十籤', '澎湖天后宮一百籤', '淺草金龍山觀音寺一百籤']
 #
@@ -78,6 +80,10 @@ def random_ask(askText):
                     }
                 }
                 break
+                
+    if askText.find('卦') >= 0:
+        godAnswer['0'] = bugua()
+        godAnswer['0']['type'] = 'Bubble'
 
     if not godAnswer['0']['type']:
         # 沒有搜到關鍵字都回貼圖
@@ -88,4 +94,34 @@ def random_ask(askText):
         godAnswer['0']['sticker'] = sticker
     return godAnswer
 
+def bugua():
+    buguaDict = {
+        'url':'',
+        'img':[],
+        'title':'',
+        'explanation':''
+    }
 
+    ua = UserAgent().random
+    url = 'https://www.eee-learning.com/eeeApp/'
+    buguaMethod = 'app.js'
+    r = rq.get(url + buguaMethod, headers={ 'User-Agent': ua })
+    r.encoding = 'utf-8'
+    jscode = r.text.replace("document.write", "return ")
+    bugue = execjs.compile(jscode)
+    result = bugue.call("bugua")
+    soup = BeautifulSoup(result, 'lxml')
+    imgs = soup.select('img')
+    for i in imgs:
+        buguaDict['img'].append(url + i['src'])
+        # print(i['src'])
+    link = soup.find("a")
+    buguaDict['url'] = url + link['href']
+    # print(link['href'])
+    words = soup.find("strong").text
+    findpos = words.find('：')
+    buguaDict['title'] = words[:findpos].replace('\u3000', '')
+    buguaDict['explanation'] = words[findpos+1:]
+    buguaDict['btn_word'] = '解卦'
+    # print(word.text)
+    return buguaDict

@@ -185,7 +185,10 @@ def check_reply_message_method(msgDict, replyTo):
             actions=get_button_template_message(var['btns']))
             replyArr.append(TemplateSendMessage(
                 alt_text=var['minText'], template=btn_template))
-    line_bot_api.reply_message(replyTo, replyArr)
+        elif var['type'] == 'Bubble':
+            get_flex_message(var, replyTo)
+    if len(replyArr) > 0:
+        line_bot_api.reply_message(replyTo, replyArr)
 
 def get_button_template_message(actionsDict):
     actionArr = []
@@ -243,3 +246,47 @@ def say_hello_message(event):
         }
     }
     check_reply_message_method(helloDict, event.reply_token)
+
+def get_flex_message(megDict, to):
+    bubble = BubbleContainer(
+        direction='ltr',
+        header=BoxComponent(
+            layout='baseline',
+            margin='md',
+            contents=[
+                TextComponent(text=megDict['title'], weight='bold', size='xl'),
+            ]
+        ),
+        body=BoxComponent(
+            layout='horizontal',
+            margin='sm',
+            spacing='sm',
+            contents=[
+                ImageComponent(
+                    size='sm',
+                    url=megDict['img'][1],
+                ),
+                TextComponent(
+                        text=megDict['explanation'],
+                        wrap=True,
+                        color='#666666',
+                        size='sm',
+                        flex=5
+                    ),
+            ]
+        ),
+        footer=BoxComponent(
+            layout='vertical',
+            spacing='sm',
+            contents=[                
+                SeparatorComponent(),
+                ButtonComponent(
+                    style='link',
+                    height='sm',
+                    action=URIAction(label=megDict['btn_word'], uri=megDict['url'])
+                )
+            ]
+        ),
+    )
+    message = FlexSendMessage(alt_text=megDict['title'], contents=bubble)
+    line_bot_api.push_message(to, message)
