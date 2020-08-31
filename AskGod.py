@@ -18,7 +18,7 @@ def pick_sixty_years_chance(index):
     # r.encoding = 'big5'
     #顯示網頁狀態
     # print(r.status_code)
-    #顯示200即為正常
+    #顯示200即為正常 
     #通常2開頭為正常
     #開頭為4或5表示錯誤
     soup = BeautifulSoup(r.text,'lxml') #將網頁資料以html.parser
