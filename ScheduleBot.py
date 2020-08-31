@@ -12,9 +12,9 @@ def greet_worker():
         '這週過半啦，週三啊各位！', 
         '今天是雷神之日。', 
         '要放假啦！嗨起來！']
-    greetWeekImg = ['Thomas Holland', 'Chris Evans', 'Ryan Reynolds', 'Thor Odinson', 'Robert Downey']
+    greetWeekImg = ['Thomas+Holland+spiderman', 'Chris+Evans+cap', 'Ryan+Reynolds', 'Thor+Odinson+Chris', 'Robert+Downey', 'Loki+Tom＋Hiddleston']
     today=int(time.strftime("%w"))-1
-    if today >= 0 and today < 5:
+    if today >= 0 and today <= 5:
         todayImages = search_image(greetWeekImg[today], 100)
         todayImgFileName = random.choice(todayImages)
         greetDict = {
@@ -34,4 +34,3 @@ def greet_worker():
                 check_push_message_method(greetDict, pushTo)
 
 greet_worker()
-
