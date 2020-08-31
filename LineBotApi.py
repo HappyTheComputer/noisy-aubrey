@@ -289,4 +289,4 @@ def get_flex_message(megDict, to):
         ),
     )
     message = FlexSendMessage(alt_text=megDict['title'], contents=bubble)
-    line_bot_api.push_message(to, message)
+    line_bot_api.reply_message(to, message)
