@@ -100,16 +100,16 @@ def toss():
     tossDict = {
         'img':[],
         'title':'',
-        'url':'',
+        'url':'https://tw.piliapp.com/random/blocks/',
         'btn_word':''
     }
-    tossDict['url'] = 'https://tw.piliapp.com/static/s3/apps/random/blocks/'
+    url = 'https://tw.piliapp.com/static/s3/apps/random/blocks/'
     tossDict['btn_word'] = '擲筊解説'
     tossResult = ''
     for i in range(2):
         tossKey = random.choice(['p', 'n'])
         tossResult += tossKey
-        tossDict['img'].append(tossDict['url'] + tossKey + '.png')
+        tossDict['img'].append(url + tossKey + '.png')
     responsWords = {
         'pp':'笑杯啦！',
         'pn':'聖杯啦！',
