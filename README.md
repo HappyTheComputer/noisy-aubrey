@@ -1,6 +1,7 @@
 # 吵鬧阿比(Noisy Aubrey)
 
->Line Bot 聊天機器人
+###### Line Bot 聊天機器人<br>
+![image](/static/images/line_bot_qr_code.png)
 
 ### Programming
 * Python
