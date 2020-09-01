@@ -62,7 +62,7 @@ def handle_text_message(event):
             godAnswer = random_ask(text)
             check_reply_message_method(godAnswer, event.reply_token)
     elif isinstance(event.source, SourceRoom) or isinstance(event.source, SourceGroup):
-        if text.startswith('請阿比'):
+        if text.startswith('阿比'):
             godAnswer = random_ask(text)
             check_reply_message_method(godAnswer, event.reply_token)
         elif text.startswith('測試'):
@@ -243,7 +243,7 @@ def say_hello_message(event):
         },
         '2': {
             'type':'Text',
-            'text':'但是我在其他人面前會緊張，在群組裡要找我幫忙要先喊『請阿比』我才會知道你找我。'
+            'text':'但是我在其他人面前會緊張，在群組裡要找我幫忙要先喊『阿比』我才會知道你找我。'
         },
         '3': {
             'type':'Text',
