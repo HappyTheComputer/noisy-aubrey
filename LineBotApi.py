@@ -62,7 +62,7 @@ def handle_text_message(event):
             godAnswer = random_ask(text)
             check_reply_message_method(godAnswer, event.reply_token)
     elif isinstance(event.source, SourceRoom) or isinstance(event.source, SourceGroup):
-        if text.startswith('#神'):
+        if text.startswith('請阿比'):
             godAnswer = random_ask(text)
             check_reply_message_method(godAnswer, event.reply_token)
         elif text.startswith('測試'):
@@ -164,9 +164,12 @@ def check_push_message_method(msgDict, pushTo):
             actions=get_button_template_message(var['btns']))
             pushArr.append(TemplateSendMessage(
                 alt_text=var['minText'], template=btn_template))
-    line_bot_api.push_message(
-        pushTo, pushArr
-    )
+        elif var['type'] == 'Bugua':
+            get_bugua_flex_message(var, pushTo, False)
+        elif var['type'] == 'Toss':
+            get_toss_flex_message(var, pushTo, False)
+    if len(pushArr) > 0:
+        line_bot_api.push_message(pushTo, pushArr)
 
 def check_reply_message_method(msgDict, replyTo):
     replyArr = []
@@ -185,8 +188,10 @@ def check_reply_message_method(msgDict, replyTo):
             actions=get_button_template_message(var['btns']))
             replyArr.append(TemplateSendMessage(
                 alt_text=var['minText'], template=btn_template))
-        elif var['type'] == 'Bubble':
-            get_flex_message(var, replyTo)
+        elif var['type'] == 'Bugua':
+            get_bugua_flex_message(var, replyTo)
+        elif var['type'] == 'Toss':
+            get_toss_flex_message(var, replyTo)
     if len(replyArr) > 0:
         line_bot_api.reply_message(replyTo, replyArr)
 
@@ -234,11 +239,11 @@ def say_hello_message(event):
         },
         '1': {
             'type':'Text',
-            'text':'只有你跟我的時候，我一定不會冷落你這是我的原則，不信你可以試試。用擲『杯』、『吉凶』或『卦』我會幫你占卜，説『籤』的話我會幫你抽一支六十甲子籤。'
+            'text':'只有你跟我的時候，我一定不會冷落你這是我的原則，不信你可以試試。用擲筊『杯』、『吉凶』或卜『卦』我會幫你占卜，説『籤』的話我會幫你抽一支六十甲子籤。'
         },
         '2': {
             'type':'Text',
-            'text':'但是我在其他人面前會緊張，在群組裡要找我幫忙要先講『#神』。'
+            'text':'但是我在其他人面前會緊張，在群組裡要找我幫忙要先喊『請阿比』我才會知道你找我。'
         },
         '3': {
             'type':'Text',
@@ -247,7 +252,51 @@ def say_hello_message(event):
     }
     check_reply_message_method(helloDict, event.reply_token)
 
-def get_flex_message(megDict, to):
+def get_toss_flex_message(megDict, to, reply = True):
+    bubble = BubbleContainer(
+        direction='ltr',
+        header=BoxComponent(
+            layout='baseline',
+            margin='md',
+            contents=[
+                TextComponent(text=megDict['title'], weight='bold', size='xl'),
+            ]
+        ),
+        body=BoxComponent(
+            layout='horizontal',
+            margin='sm',
+            spacing='sm',
+            contents=[
+                ImageComponent(
+                    size='sm',
+                    url=megDict['img'][0],
+                ),
+                ImageComponent(
+                    size='sm',
+                    url=megDict['img'][1],
+                ),
+            ]
+        ),
+        footer=BoxComponent(
+            layout='vertical',
+            spacing='sm',
+            contents=[                
+                SeparatorComponent(),
+                ButtonComponent(
+                    style='link',
+                    height='sm',
+                    action=URIAction(label=megDict['btn_word'], uri=megDict['url'])
+                )
+            ]
+        ),
+    )
+    message = FlexSendMessage(alt_text=megDict['title'], contents=bubble)
+    if reply:
+        line_bot_api.reply_message(to, message)
+    else:
+        line_bot_api.push_message(to, message)
+
+def get_bugua_flex_message(megDict, to, reply = True):
     bubble = BubbleContainer(
         direction='ltr',
         header=BoxComponent(
@@ -289,4 +338,7 @@ def get_flex_message(megDict, to):
         ),
     )
     message = FlexSendMessage(alt_text=megDict['title'], contents=bubble)
-    line_bot_api.reply_message(to, message)
+    if reply:
+        line_bot_api.reply_message(to, message)
+    else:
+        line_bot_api.push_message(to, message)

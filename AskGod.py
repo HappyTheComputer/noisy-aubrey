@@ -37,7 +37,6 @@ def pick_sixty_years_chance(index):
     return chanceDict
 
 GameKeyWords = {
-    '杯': ['凸凸-沒杯啦！', '平凸-聖杯啦！', '凸平-聖杯啦！', '平平-笑杯啦！'],
     '吉凶': ['大吉大利！', '中吉之戰！', '小吉不嫌棄。', '吉也佳～', '後悔末吉QQ', '凶無大志。', '大凶之兆。'],
     '籤': {
         '六十甲子籤': 60
@@ -83,7 +82,10 @@ def random_ask(askText):
                 
     if askText.find('卦') >= 0:
         godAnswer['0'] = bugua()
-        godAnswer['0']['type'] = 'Bubble'
+        godAnswer['0']['type'] = 'Bugua'
+    elif askText.find('杯') >= 0:
+        godAnswer['0'] = toss()
+        godAnswer['0']['type'] = 'Toss'
 
     if not godAnswer['0']['type']:
         # 沒有搜到關鍵字都回貼圖
@@ -93,6 +95,29 @@ def random_ask(askText):
         godAnswer['0']['package'] = package
         godAnswer['0']['sticker'] = sticker
     return godAnswer
+
+def toss():
+    tossDict = {
+        'img':[],
+        'title':'',
+        'url':'',
+        'btn_word':''
+    }
+    tossDict['url'] = 'https://tw.piliapp.com/static/s3/apps/random/blocks/'
+    tossDict['btn_word'] = '擲筊解説'
+    tossResult = ''
+    for i in range(2):
+        tossKey = random.choice(['p', 'n'])
+        tossResult += tossKey
+        tossDict['img'].append(tossDict['url'] + tossKey + '.png')
+    responsWords = {
+        'pp':'笑杯啦！',
+        'pn':'聖杯啦！',
+        'np':'聖杯啦！',
+        'nn':'沒杯啦！'
+    }
+    tossDict['title'] = responsWords[tossResult]
+    return tossDict
 
 def bugua():
     buguaDict = {
