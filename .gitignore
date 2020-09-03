@@ -4,5 +4,4 @@ Pipfile
 .postgresql
 .env
 
-static/
 test/
