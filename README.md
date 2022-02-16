@@ -31,7 +31,3 @@
 #### 詩籤<br>
 ![image](/static/images/feature04.jpg)<br>
 使用[台灣好廟網六十甲子籤](https://qiangua.temple01.com)
-
-#### 每日早安（Google搜尋圖片隨機選取）<br>
-![image](/static/images/feature05.jpg)<br>
-![image](/static/images/feature06.jpg)
